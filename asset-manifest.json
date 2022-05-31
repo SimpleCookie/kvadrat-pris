@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/kvadrat-pris/static/css/main.9253a997.css",
+    "main.js": "/kvadrat-pris/static/js/main.dfa28ad6.js",
+    "static/js/787.715163d3.chunk.js": "/kvadrat-pris/static/js/787.715163d3.chunk.js",
+    "index.html": "/kvadrat-pris/index.html",
+    "main.9253a997.css.map": "/kvadrat-pris/static/css/main.9253a997.css.map",
+    "main.dfa28ad6.js.map": "/kvadrat-pris/static/js/main.dfa28ad6.js.map",
+    "787.715163d3.chunk.js.map": "/kvadrat-pris/static/js/787.715163d3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9253a997.css",
+    "static/js/main.dfa28ad6.js"
+  ]
+}
