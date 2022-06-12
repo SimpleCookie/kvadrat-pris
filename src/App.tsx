@@ -1,18 +1,11 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import "./App.css"
+import { Quotation } from "./components/quotation/Quotation"
 
-const consultantToClientPrice = (price: number, fee: number) => {
-  if (fee === 0) return price / 0.83
-  return Math.ceil(price / 0.83 / (1 - fee / 100))
-}
-
-const clientToConsultantPrice = (price: number, fee: number) => {
-  return Math.floor(price * (1 - fee / 100) * 0.83)
-}
 
 const App = () => {
   const [useClientPrice, setUseClientPrice] = useState(false)
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState(800)
   const [fee, setFee] = useState(0)
 
   return (
@@ -55,7 +48,7 @@ const App = () => {
             <input
               type="number"
               name="price"
-              defaultValue={800}
+              defaultValue={price}
               onChange={(e) => setPrice(+e.target.value)}
             />
           </label>
@@ -70,23 +63,7 @@ const App = () => {
           </label>
         </form>
         <div className="result">
-          <p>
-            {useClientPrice ? (
-              <>
-                <div>
-                  Konsulten får ut: {clientToConsultantPrice(price, fee)} kr
-                </div>
-                <div>Kunden betalar: {price} kr</div>
-              </>
-            ) : (
-              <>
-                <div>Konsulten får ut: {price} kr</div>
-                <div>
-                  Kunden betalar: {consultantToClientPrice(price, fee)} kr
-                </div>
-              </>
-            )}
-          </p>
+          <Quotation useClientPrice={useClientPrice} price={price} fee={fee} />
         </div>
       </main>
     </div>
