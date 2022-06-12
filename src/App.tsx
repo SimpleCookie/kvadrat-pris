@@ -1,5 +1,7 @@
 import { useState } from "react"
 import "./App.css"
+import { Budget } from "./components/budget/budget"
+import { clientToConsultantPrice } from "./components/quotation/ConsultantPrice"
 import { Quotation } from "./components/quotation/Quotation"
 
 
@@ -64,6 +66,8 @@ const App = () => {
         </form>
         <div className="result">
           <Quotation useClientPrice={useClientPrice} price={price} fee={fee} />
+          <div style={{ paddingBottom: "2em"}} />
+          <Budget price={useClientPrice ? clientToConsultantPrice(price, fee).price : price} />
         </div>
       </main>
     </div>
