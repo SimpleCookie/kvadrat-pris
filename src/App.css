@@ -432,6 +432,11 @@
   border-bottom: 1px solid var(--border);
 }
 
+/* Settings grid is single-column inside the narrow left panel */
+.forecast-layout-left .forecast-settings-grid {
+  grid-template-columns: 1fr;
+}
+
 .forecast-layout-right {
   flex: 1;
   min-width: 0;
