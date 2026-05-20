@@ -320,13 +320,13 @@
   font-size: 1.125rem;
 }
 
-/* ─── Advanced view — taller card, align top ─────────────────────────────── */
+/* ─── Advanced view — wider card, align top ─────────────────────────────── */
 .view-advanced {
   align-items: flex-start;
 }
 
 .view-advanced .main {
-  max-width: 560px;
+  max-width: 940px;
 }
 
 /* ─── Card header with toggle ────────────────────────────────────────────── */
@@ -413,11 +413,55 @@
   -webkit-appearance: none;
 }
 
-/* ─── Forecast results ───────────────────────────────────────────────────── */
-.forecast-results {
+/* ─── Forecast two-column layout ────────────────────────────────────────── */
+.forecast-layout {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: stretch;
+}
+
+.forecast-layout-left {
+  width: 360px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+}
+
+/* Remove individual bottom borders on sections inside the left column
+   except between siblings — we want dividers within the column */
+.forecast-layout-left .prices-section,
+.forecast-layout-left .fees-section {
+  border-bottom: 1px solid var(--border);
+}
+
+.forecast-layout-right {
+  flex: 1;
+  min-width: 0;
+  /* top-align content so it doesn't stretch */
+  align-self: flex-start;
+}
+
+/* The results section sits directly in the right column, no extra border-bottom */
+.forecast-layout-right .breakdown-section {
+  border-bottom: none;
+}
+
+/* Placeholder when no rate is set */
+.forecast-empty {
+  padding: 3rem 2rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  text-align: center;
+}
+
+/* Stack columns on narrow screens */
+@media (max-width: 700px) {
+  .forecast-layout {
+    flex-direction: column;
+  }
+  .forecast-layout-left {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
 }
 
 .forecast-context {
