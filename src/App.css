@@ -531,6 +531,19 @@
   margin-top: 0.1rem;
 }
 
+/* ─── Employee comparison block ─────────────────────────────────────────── */
+.forecast-block-comparison {
+  background: var(--active-bg);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  /* override the default forecast-block top padding/border since we have our own box */
+  padding-top: 1rem;
+}
+
+.forecast-block-comparison .forecast-block-title {
+  color: var(--text-primary);
+}
+
 /* ─── Monthly take-home highlight ────────────────────────────────────────── */
 .forecast-monthly-card {
   display: flex;

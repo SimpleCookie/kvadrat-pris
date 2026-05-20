@@ -1,6 +1,8 @@
 import {
   calculateForecast,
+  calculateEquivalentEmployeeGross,
   SCHABLONBELOPP,
+  SOCIAL_FEE_RATE,
   type ForecastInputs,
 } from '../lib/forecast'
 import { formatSEK } from '../lib/pricing'
@@ -10,6 +12,11 @@ type Props = ForecastInputs
 export const AdvancedView = (props: Props) => {
   const r = calculateForecast(props)
   const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt } = props
+
+  const equivGrossYear = calculateEquivalentEmployeeGross(r.totalTakeHomeYear, kommunalskatt)
+  const equivGrossMonth = Math.round(equivGrossYear / 12)
+  const equivEmployerCostYear = Math.round(equivGrossYear * (1 + SOCIAL_FEE_RATE))
+  const equivEmployerCostMonth = Math.round(equivEmployerCostYear / 12)
 
   if (!consultantRatePerHour) {
     return (
@@ -123,6 +130,43 @@ export const AdvancedView = (props: Props) => {
         <div className="forecast-monthly-card">
           <span className="forecast-monthly-card-label">Netto per månad</span>
           <span className="forecast-monthly-card-amount">{formatSEK(r.totalTakeHomeMonth)}</span>
+        </div>
+      </div>
+
+      {/* ── Som anstÃ¤lld ── */}
+      <div className="forecast-block forecast-block-comparison">
+        <h2 className="forecast-block-title">
+          Som anställd — jämförelse
+          <span
+            className="fee-tooltip"
+            data-tooltip="Bruttolön som krävs för att en anställd ska nå samma nettoinkomst. Utan jobbskatteavdrag (reell lön är något lägre)."
+            aria-label="Jämförelse med anställd"
+          >?</span>
+        </h2>
+        <div className="breakdown-rows">
+          <div className="breakdown-row">
+            <span>Bruttolön / år</span>
+            <span className="breakdown-value">{formatSEK(equivGrossYear)}</span>
+          </div>
+          <div className="breakdown-row breakdown-sub-total">
+            <span>per månad</span>
+            <span className="breakdown-value">{formatSEK(equivGrossMonth)}</span>
+          </div>
+          <div className="breakdown-row" style={{ marginTop: '0.75rem' }}>
+            <span>
+              Arbetsgivarkostnad / år
+              <span
+                className="fee-tooltip"
+                data-tooltip="Bruttolön + arbetsgivaravgift (31,42%). Vad arbetsgivaren betalar totalt."
+                aria-label="Arbetsgivarkostnad inklusive arbetsgivaravgift"
+              >?</span>
+            </span>
+            <span className="breakdown-value">{formatSEK(equivEmployerCostYear)}</span>
+          </div>
+          <div className="breakdown-row breakdown-sub-total">
+            <span>per månad</span>
+            <span className="breakdown-value">{formatSEK(equivEmployerCostMonth)}</span>
+          </div>
         </div>
       </div>
 

@@ -59,6 +59,32 @@ export interface ForecastResult {
   totalTakeHomeMonth: number
 }
 
+/** Statlig skattebrytpunkt 2026 (above this, +20 % statlig skatt applies) */
+export const STATLIG_SKATTEBRYTPUNKT = 643_100
+
+/**
+ * Calculates the gross salary a regular employee would need to earn to achieve
+ * the same net income as the consultant. Uses simplified kommunalskatt only
+ * (no jobbskatteavdrag), consistent with the rest of the app.
+ */
+export const calculateEquivalentEmployeeGross = (
+  netIncome: number,
+  kommunalskatt: number,
+): number => {
+  const rate = kommunalskatt / 100
+
+  // First try: no statlig skatt
+  const grossSimple = netIncome / (1 - rate)
+  if (grossSimple <= STATLIG_SKATTEBRYTPUNKT) {
+    return Math.round(grossSimple)
+  }
+
+  // Progressive: Net = Gross × (0.80 − rate) + STATLIG_SKATTEBRYTPUNKT × 0.20
+  // → Gross = (Net − STATLIG_SKATTEBRYTPUNKT × 0.20) / (0.80 − rate)
+  const gross = (netIncome - STATLIG_SKATTEBRYTPUNKT * 0.2) / (0.8 - rate)
+  return Math.round(gross)
+}
+
 // ─── Calculation ──────────────────────────────────────────────────────────
 
 export const calculateForecast = (inputs: ForecastInputs): ForecastResult => {
