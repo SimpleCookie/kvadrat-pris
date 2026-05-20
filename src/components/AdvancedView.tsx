@@ -6,11 +6,13 @@ import {
 } from '../lib/forecast'
 import { formatSEK } from '../lib/pricing'
 
-type Props = ForecastInputs
+type Props = ForecastInputs & {
+  kvadratCutPerHour?: number
+}
 
 export const AdvancedView = (props: Props) => {
   const r = calculateForecast(props)
-  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt } = props
+  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour } = props
 
   const equivGrossYear = calculateEquivalentEmployeeGross(r.totalTakeHomeYear, kommunalskatt)
   const equivGrossMonth = Math.round(equivGrossYear / 12)
@@ -32,6 +34,13 @@ export const AdvancedView = (props: Props) => {
         &nbsp;×&nbsp;{formatSEK(consultantRatePerHour)}
         &nbsp;=&nbsp;<strong>{formatSEK(r.grossRevenue)}/år (brutto)</strong>
       </p>
+      {kvadratCutPerHour != null && kvadratCutPerHour > 0 && (
+        <p className="forecast-context forecast-kvadrat-cut">
+          Kvadrats andel:{' '}
+          <strong>{formatSEK(kvadratCutPerHour * billableHoursPerYear)}/år</strong>
+          {' '}({kvadratCutPerHour.toLocaleString('sv-SE')} kr/h)
+        </p>
+      )}
 
       {/* ── Bolaget ── */}
       <div className="forecast-block">
@@ -140,16 +149,11 @@ export const AdvancedView = (props: Props) => {
             aria-label="Jämförelse med anställd"
           >?</span>
         </h2>
-        <div className="breakdown-rows">
-          <div className="breakdown-row">
-            <span>Bruttolön / år</span>
-            <span className="breakdown-value">{formatSEK(equivGrossYear)}</span>
-          </div>
-          <div className="breakdown-row breakdown-sub-total">
-            <span>per månad</span>
-            <span className="breakdown-value">{formatSEK(equivGrossMonth)}</span>
-          </div>
-        </div>
+        <p className="forecast-comparison-text">
+          För motsvarande nettolön som anställd krävs{' '}
+          <strong>{formatSEK(equivGrossMonth)}/mån</strong>{' '}
+          i bruttolön.
+        </p>
       </div>
 
       <p className="forecast-disclaimer">

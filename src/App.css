@@ -530,7 +530,20 @@
   letter-spacing: 0.06em;
   margin-top: 0.1rem;
 }
+.forecast-kvadrat-cut {
+  margin-top: 0.25rem;
+  color: var(--deduction);
+}
 
+.forecast-comparison-text {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.forecast-comparison-text strong {
+  color: var(--text-primary);
+}
 /* ─── Employee comparison block ─────────────────────────────────────────── */
 .forecast-block-comparison {
   background: var(--active-bg);

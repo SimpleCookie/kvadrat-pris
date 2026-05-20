@@ -263,6 +263,7 @@ const App = () => {
                   monthlySalaryGross={parseInt(monthlySalary) || 0}
                   overheadPerYear={parseInt(overhead) || 0}
                   kommunalskatt={parseFloat(kommunalskatt) || 0}
+                  kvadratCutPerHour={kvadratCut}
                 />
               </div>
             </div>
