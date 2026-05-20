@@ -7,10 +7,10 @@ export const SOCIAL_FEE_RATE = 0.3142
 export const CORPORATE_TAX_RATE = 0.206
 
 /**
- * Förenklingsregeln schablonbelopp 2026: 2.75 × IBB (78 600 kr).
- * The max low-tax dividend you can take per year from one AB.
+ * Förenklingsregeln grundbelopp 2026: 4 × IBB (80 600 kr) = 322 400 kr.
+ * Nya 3:12-reglerna (gäller från 2026). Max lågbeskattad utdelning per år från ett AB.
  */
-export const SCHABLONBELOPP = 216_150
+export const SCHABLONBELOPP = 322_400
 
 /** Tax rate on dividends within gränsbeloppet (3:12-reglerna, förenklingsregeln) */
 export const DIVIDEND_TAX_RATE = 0.2
