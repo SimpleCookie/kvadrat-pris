@@ -530,9 +530,10 @@
   letter-spacing: 0.06em;
   margin-top: 0.1rem;
 }
+
 .forecast-kvadrat-cut {
   margin-top: 0.25rem;
-  color: var(--deduction);
+  color: #c87c1a;
 }
 
 .forecast-comparison-text {
@@ -544,6 +545,7 @@
 .forecast-comparison-text strong {
   color: var(--text-primary);
 }
+
 /* ─── Employee comparison block ─────────────────────────────────────────── */
 .forecast-block-comparison {
   background: var(--active-bg);
