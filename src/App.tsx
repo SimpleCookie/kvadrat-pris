@@ -151,7 +151,7 @@ const App = () => {
                   Kvadrats andel
                   <span
                     className="fee-tooltip"
-                    title="Den andel av kundpriset som Kvadrat behåller"
+                    data-tooltip="Den andel av kundpriset som Kvadrat behåller"
                     aria-label="Den andel av kundpriset som Kvadrat behåller"
                   >
                     ?
@@ -178,7 +178,7 @@ const App = () => {
                   Mellanskär
                   <span
                     className="fee-tooltip"
-                    title="Avgift för eventuell förmedlare"
+                    data-tooltip="Avgift för eventuell förmedlare"
                     aria-label="Avgift för eventuell förmedlare"
                   >
                     ?

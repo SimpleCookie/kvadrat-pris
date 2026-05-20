@@ -199,6 +199,7 @@
 }
 
 .fee-tooltip {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -211,6 +212,31 @@
   font-weight: 700;
   cursor: help;
   flex-shrink: 0;
+}
+
+.fee-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 0.375rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+}
+
+.fee-tooltip:hover::after,
+.fee-tooltip:focus-visible::after {
+  opacity: 1;
 }
 
 .fee-input-wrap {
