@@ -337,6 +337,43 @@
   gap: 1rem;
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+}
+
+.lang-toggle {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.lang-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.25rem 0.4375rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.lang-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.lang-btn-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
 .view-toggle {
   background: none;
   border: 1px solid var(--accent);

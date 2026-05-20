@@ -5,14 +5,16 @@ import {
   type ForecastInputs,
 } from '../lib/forecast'
 import { formatSEK } from '../lib/pricing'
+import { type T } from '../lib/i18n'
 
 type Props = ForecastInputs & {
   kvadratCutPerHour?: number
+  t: T
 }
 
 export const AdvancedView = (props: Props) => {
   const r = calculateForecast(props)
-  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour } = props
+  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour, t } = props
 
   const equivGrossYear = calculateEquivalentEmployeeGross(r.totalTakeHomeYear, kommunalskatt)
   const equivGrossMonth = Math.round(equivGrossYear / 12)
@@ -20,7 +22,7 @@ export const AdvancedView = (props: Props) => {
   if (!consultantRatePerHour) {
     return (
       <div className="forecast-empty">
-        Ange ett konsultpris i fältet till vänster.
+        {t.enterPrice}
       </div>
     )
   }
@@ -32,38 +34,38 @@ export const AdvancedView = (props: Props) => {
       <p className="forecast-context">
         {billableHoursPerYear.toLocaleString('sv-SE')} h
         &nbsp;×&nbsp;{formatSEK(consultantRatePerHour)}
-        &nbsp;=&nbsp;<strong>{formatSEK(r.grossRevenue)}/år (brutto)</strong>
+        &nbsp;=&nbsp;<strong>{formatSEK(r.grossRevenue)}{t.perYearGross}</strong>
       </p>
       {kvadratCutPerHour != null && kvadratCutPerHour > 0 && (
         <p className="forecast-context forecast-kvadrat-cut">
-          Kvadrats andel:{' '}
-          <strong>{formatSEK(kvadratCutPerHour * billableHoursPerYear)}/år</strong>
+          {t.kvadratShareLabel}{' '}
+          <strong>{formatSEK(kvadratCutPerHour * billableHoursPerYear)}{t.perYear}</strong>
           {' '}({kvadratCutPerHour.toLocaleString('sv-SE')} kr/h)
         </p>
       )}
 
       {/* ── Bolaget ── */}
       <div className="forecast-block">
-        <h2 className="forecast-block-title">Bolaget</h2>
+        <h2 className="forecast-block-title">{t.companyBlock}</h2>
         <div className="breakdown-rows">
           <div className="breakdown-row">
-            <span>Intäkter (brutto)</span>
+            <span>{t.grossRevenue}</span>
             <span className="breakdown-value">{formatSEK(r.grossRevenue)}</span>
           </div>
           <div className="breakdown-row breakdown-deduction">
-            <span>Overhead</span>
+            <span>{t.overheadRow}</span>
             <span className="breakdown-value">−{formatSEK(r.overhead)}</span>
           </div>
           <div className="breakdown-row breakdown-deduction">
-            <span>Lön brutto ({monthlySalaryGross.toLocaleString('sv-SE')} kr/mån)</span>
+            <span>{t.salaryGrossRow(monthlySalaryGross.toLocaleString('sv-SE'))}</span>
             <span className="breakdown-value">−{formatSEK(r.salaryGross)}</span>
           </div>
           <div className="breakdown-row breakdown-deduction">
-            <span>Arbetsgivaravgift (31,42%)</span>
+            <span>{t.socialFees}</span>
             <span className="breakdown-value">−{formatSEK(r.socialFees)}</span>
           </div>
           <div className={`breakdown-row breakdown-sub-total${r.preTaxProfit < 0 ? ' breakdown-deduction' : ''}`}>
-            <span>Vinst före bolagsskatt</span>
+            <span>{t.preTaxProfit}</span>
             <span className="breakdown-value">
               {r.preTaxProfit < 0 ? '−' : ''}{formatSEK(Math.abs(r.preTaxProfit))}
             </span>
@@ -72,38 +74,38 @@ export const AdvancedView = (props: Props) => {
           {r.preTaxProfit > 0 && (
             <>
               <div className="breakdown-row breakdown-deduction">
-                <span>Bolagsskatt (20,6%)</span>
+                <span>{t.corporateTax}</span>
                 <span className="breakdown-value">−{formatSEK(r.corporateTax)}</span>
               </div>
               <div className="breakdown-row breakdown-sub-total">
-                <span>Vinst efter skatt</span>
+                <span>{t.profitAfterTax}</span>
                 <span className="breakdown-value">{formatSEK(r.profitAfterTax)}</span>
               </div>
               <div className="breakdown-row breakdown-deduction">
                 <span>
-                  Utdelning
+                  {t.dividend}
                   <span
                     className="fee-tooltip"
-                    data-tooltip={`Förenklingsregeln: max ${formatSEK(SCHABLONBELOPP)}/år beskattas med 20%.`}
-                    aria-label="Förenklingsregeln: utdelning inom schablonbelopp beskattas med 20%"
+                    data-tooltip={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
+                    aria-label={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
                   >?</span>
                 </span>
                 <span className="breakdown-value">−{formatSEK(r.dividendGross)}</span>
               </div>
               <div className="breakdown-row breakdown-deduction">
-                <span>Utdelningsskatt (20%)</span>
+                <span>{t.dividendTax}</span>
                 <span className="breakdown-value">−{formatSEK(r.dividendTax)}</span>
               </div>
               {r.retainedInCompany > 0 && (
                 <div className="breakdown-row forecast-retained">
                   <span>
-                    Kvar i bolaget
+                    {t.retainedLabel}
                     <span
                       className="fee-tooltip"
-                      data-tooltip="Dina pengar — kan tas ut som framtida lön eller utdelning när det passar."
-                      aria-label="Dina pengar — kan tas ut som framtida lön eller utdelning"
+                      data-tooltip={t.retainedTooltip}
+                      aria-label={t.retainedAriaLabel}
                     >?</span>
-                    <span className="forecast-retained-note">dina pengar</span>
+                    <span className="forecast-retained-note">{t.retainedNote}</span>
                   </span>
                   <span className="breakdown-value">{formatSEK(r.retainedInCompany)}</span>
                 </div>
@@ -115,50 +117,47 @@ export const AdvancedView = (props: Props) => {
 
       {/* ── Du ── */}
       <div className="forecast-block">
-        <h2 className="forecast-block-title">Du — netto</h2>
+        <h2 className="forecast-block-title">{t.youBlock}</h2>
         <div className="breakdown-rows">
           <div className="breakdown-row">
-            <span>Nettolön/år</span>
+            <span>{t.netSalaryYear}</span>
             <span className="breakdown-value">{formatSEK(r.salaryNet)}</span>
           </div>
           {r.dividendNet > 0 && (
             <div className="breakdown-row forecast-dividend">
-              <span>+ Netto utdelning</span>
+              <span>{t.netDividend}</span>
               <span className="breakdown-value">{formatSEK(r.dividendNet)}</span>
             </div>
           )}
           <div className="breakdown-row breakdown-total">
-            <span>Netto per år</span>
+            <span>{t.netPerYear}</span>
             <span className="breakdown-value">{formatSEK(r.totalTakeHomeYear)}</span>
           </div>
         </div>
 
         <div className="forecast-monthly-card">
-          <span className="forecast-monthly-card-label">Netto per månad</span>
+          <span className="forecast-monthly-card-label">{t.netPerMonth}</span>
           <span className="forecast-monthly-card-amount">{formatSEK(r.totalTakeHomeMonth)}</span>
         </div>
       </div>
 
-      {/* ── Som anstÃ¤lld ── */}
+      {/* ── Som anställd ── */}
       <div className="forecast-block forecast-block-comparison">
         <h2 className="forecast-block-title">
-          Som anställd — jämförelse
+          {t.employeeBlock}
           <span
             className="fee-tooltip"
-            data-tooltip="Bruttolön som krävs för att en anställd ska nå samma nettoinkomst. Utan jobbskatteavdrag (reell lön är något lägre)."
-            aria-label="Jämförelse med anställd"
+            data-tooltip={t.employeeTooltip}
+            aria-label={t.employeeAriaLabel}
           >?</span>
         </h2>
         <p className="forecast-comparison-text">
-          För motsvarande nettolön som anställd krävs{' '}
-          <strong>{formatSEK(equivGrossMonth)}/mån</strong>{' '}
-          i bruttolön.
+          {t.employeeComparisonText(`${formatSEK(equivGrossMonth)}/mån`)}
         </p>
       </div>
 
       <p className="forecast-disclaimer">
-        * Netto = efter kommunalskatt ({kommunalskatt}%) och utdelningsskatt.
-        Jobbskatteavdrag ej inräknat. Förenklingsregeln antagen för utdelning.
+        {t.disclaimer(kommunalskatt)}
       </p>
     </section>
   )

@@ -7,6 +7,7 @@ import {
   formatSEK,
 } from "./lib/pricing"
 import { AdvancedView } from "./components/AdvancedView"
+import { translations, type Lang } from "./lib/i18n"
 
 const STORAGE_KEY = "kvadrat-pris-state"
 
@@ -15,6 +16,7 @@ interface SavedState {
   activeValue: string
   kvadratFee: string
   middlemanFee: string
+  lang?: Lang
 }
 
 const loadState = (): Partial<SavedState> => {
@@ -28,6 +30,9 @@ const loadState = (): Partial<SavedState> => {
 
 const App = () => {
   const saved = loadState()
+
+  const [lang, setLang] = useState<Lang>(saved.lang ?? 'sv')
+  const t = translations[lang]
 
   const [view, setView] = useState<"simple" | "advanced">("simple")
 
@@ -47,9 +52,9 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ activeField, activeValue, kvadratFee, middlemanFee })
+      JSON.stringify({ activeField, activeValue, kvadratFee, middlemanFee, lang })
     )
-  }, [activeField, activeValue, kvadratFee, middlemanFee])
+  }, [activeField, activeValue, kvadratFee, middlemanFee, lang])
 
   const parsedActive = parseFloat(activeValue) || 0
   const parsedKvadrat = clampFee(parseFloat(kvadratFee) || 0)
@@ -83,7 +88,7 @@ const App = () => {
   const pricesSection = (
     <section className="prices-section">
       <div className={`price-field${activeField === "consultant" ? " active" : ""}`}>
-        <label htmlFor="consultant-price" className="price-label">Konsultpris</label>
+        <label htmlFor="consultant-price" className="price-label">{t.consultantPrice}</label>
         <div className="price-input-wrap">
           <input
             id="consultant-price"
@@ -95,15 +100,15 @@ const App = () => {
             value={activeField === "consultant" ? activeValue : String(consultantPrice)}
             onChange={(e) => { setActiveField("consultant"); setActiveValue(e.target.value) }}
             onFocus={() => setActiveField("consultant")}
-            aria-label="Konsultpris i kronor per timme"
+            aria-label={t.consultantPriceAria}
           />
           <span className="price-unit">kr/h</span>
         </div>
-        <p className="price-hint">Det du tar hem</p>
+        <p className="price-hint">{t.consultantPriceHint}</p>
       </div>
       <div className="price-arrow" aria-hidden="true">⇄</div>
       <div className={`price-field${activeField === "client" ? " active" : ""}`}>
-        <label htmlFor="client-price" className="price-label">Kundpris</label>
+        <label htmlFor="client-price" className="price-label">{t.clientPrice}</label>
         <div className="price-input-wrap">
           <input
             id="client-price"
@@ -115,11 +120,11 @@ const App = () => {
             value={activeField === "client" ? activeValue : String(clientPrice)}
             onChange={(e) => { setActiveField("client"); setActiveValue(e.target.value) }}
             onFocus={() => setActiveField("client")}
-            aria-label="Kundpris i kronor per timme"
+            aria-label={t.clientPriceAria}
           />
           <span className="price-unit">kr/h</span>
         </div>
-        <p className="price-hint">Vad kunden betalar</p>
+        <p className="price-hint">{t.clientPriceHint}</p>
       </div>
     </section>
   )
@@ -127,24 +132,24 @@ const App = () => {
   const feesSection = (
     <section className="fees-section">
       <fieldset className="fees-fieldset">
-        <legend className="fees-legend">Avgifter</legend>
+        <legend className="fees-legend">{t.feesLegend}</legend>
         <div className="fee-row">
           <label htmlFor="kvadrat-fee" className="fee-label">
-            Kvadrats andel
-            <span className="fee-tooltip" data-tooltip="Den andel av kundpriset som Kvadrat behåller" aria-label="Den andel av kundpriset som Kvadrat behåller">?</span>
+            {t.kvadratShare}
+            <span className="fee-tooltip" data-tooltip={t.kvadratShareTooltip} aria-label={t.kvadratShareTooltip}>?</span>
           </label>
           <div className="fee-input-wrap">
-            <input id="kvadrat-fee" type="number" inputMode="decimal" min={0} max={99} step={1} className="fee-input" value={kvadratFee} onChange={(e) => setKvadratFee(e.target.value)} aria-label="Kvadrats andel i procent" />
+            <input id="kvadrat-fee" type="number" inputMode="decimal" min={0} max={99} step={1} className="fee-input" value={kvadratFee} onChange={(e) => setKvadratFee(e.target.value)} aria-label={t.kvadratShare} />
             <span className="fee-unit">%</span>
           </div>
         </div>
         <div className="fee-row">
           <label htmlFor="middleman-fee" className="fee-label">
-            Mellanskär
-            <span className="fee-tooltip" data-tooltip="Avgift för eventuell förmedlare" aria-label="Avgift för eventuell förmedlare">?</span>
+            {t.middleman}
+            <span className="fee-tooltip" data-tooltip={t.middlemanTooltip} aria-label={t.middlemanTooltip}>?</span>
           </label>
           <div className="fee-input-wrap">
-            <input id="middleman-fee" type="number" inputMode="decimal" min={0} max={99} step={1} className="fee-input" value={middlemanFee} onChange={(e) => setMiddlemanFee(e.target.value)} aria-label="Mellanskär i procent" />
+            <input id="middleman-fee" type="number" inputMode="decimal" min={0} max={99} step={1} className="fee-input" value={middlemanFee} onChange={(e) => setMiddlemanFee(e.target.value)} aria-label={t.middleman} />
             <span className="fee-unit">%</span>
           </div>
         </div>
@@ -155,42 +160,42 @@ const App = () => {
   const forecastSettingsSection = (
     <section className="fees-section">
       <fieldset className="fees-fieldset">
-        <legend className="fees-legend">Inställningar</legend>
+        <legend className="fees-legend">{t.settingsLegend}</legend>
         <div className="forecast-settings-grid">
           <div className="forecast-settings-field">
             <label htmlFor="billable-hours" className="forecast-settings-label">
-              Timmar/år
-              <span className="fee-tooltip" data-tooltip="Räkna bort semester, helgdagar och intern tid. Standard: 40h × 40v = 1 600 h." aria-label="Räkna bort semester och intern tid">?</span>
+              {t.billableHours}
+              <span className="fee-tooltip" data-tooltip={t.billableHoursTooltip} aria-label={t.billableHoursAria}>?</span>
             </label>
             <div className="forecast-settings-input-wrap">
-              <input id="billable-hours" type="number" inputMode="numeric" min={0} max={3000} step={40} className="forecast-settings-input" value={billableHours} onChange={(e) => setBillableHours(e.target.value)} aria-label="Fakturerbara timmar per år" />
+              <input id="billable-hours" type="number" inputMode="numeric" min={0} max={3000} step={40} className="forecast-settings-input" value={billableHours} onChange={(e) => setBillableHours(e.target.value)} aria-label={t.billableHoursAria} />
               <span className="fee-unit">h</span>
             </div>
           </div>
           <div className="forecast-settings-field">
             <label htmlFor="monthly-salary" className="forecast-settings-label">
-              Månadslön
-              <span className="fee-tooltip" data-tooltip="Statlig skattebrytpunkt 2026: ~643 100 kr/år ≈ 53 600 kr/mån. Lön över detta beskattas hårdare." aria-label="Statlig skattebrytpunkt 2026">?</span>
+              {t.monthlySalary}
+              <span className="fee-tooltip" data-tooltip={t.monthlySalaryTooltip} aria-label={t.monthlySalaryAria}>?</span>
             </label>
             <div className="forecast-settings-input-wrap">
-              <input id="monthly-salary" type="number" inputMode="numeric" min={0} step={1000} className="forecast-settings-input" value={monthlySalary} onChange={(e) => setMonthlySalary(e.target.value)} aria-label="Månadslön i kronor brutto" />
+              <input id="monthly-salary" type="number" inputMode="numeric" min={0} step={1000} className="forecast-settings-input" value={monthlySalary} onChange={(e) => setMonthlySalary(e.target.value)} aria-label={t.monthlySalaryAria} />
               <span className="fee-unit">kr</span>
             </div>
           </div>
           <div className="forecast-settings-field">
             <label htmlFor="overhead" className="forecast-settings-label">
-              Overhead/år
-              <span className="fee-tooltip" data-tooltip="Bokföring, försäkring, utrustning, programvaror m.m." aria-label="Bokföring, försäkring m.m.">?</span>
+              {t.overheadLabel}
+              <span className="fee-tooltip" data-tooltip={t.overheadTooltip} aria-label={t.overheadAria}>?</span>
             </label>
             <div className="forecast-settings-input-wrap">
-              <input id="overhead" type="number" inputMode="numeric" min={0} step={1000} className="forecast-settings-input" value={overhead} onChange={(e) => setOverhead(e.target.value)} aria-label="Overheadkostnader per år i kronor" />
+              <input id="overhead" type="number" inputMode="numeric" min={0} step={1000} className="forecast-settings-input" value={overhead} onChange={(e) => setOverhead(e.target.value)} aria-label={t.overheadAria} />
               <span className="fee-unit">kr</span>
             </div>
           </div>
           <div className="forecast-settings-field">
-            <label htmlFor="kommunalskatt" className="forecast-settings-label">Kommunalskatt</label>
+            <label htmlFor="kommunalskatt" className="forecast-settings-label">{t.municipalTax}</label>
             <div className="forecast-settings-input-wrap">
-              <input id="kommunalskatt" type="number" inputMode="decimal" min={0} max={40} step={0.1} className="forecast-settings-input" value={kommunalskatt} onChange={(e) => setKommunalskatt(e.target.value)} aria-label="Kommunalskatt i procent" />
+              <input id="kommunalskatt" type="number" inputMode="decimal" min={0} max={40} step={0.1} className="forecast-settings-input" value={kommunalskatt} onChange={(e) => setKommunalskatt(e.target.value)} aria-label={t.municipalTaxAria} />
               <span className="fee-unit">%</span>
             </div>
           </div>
@@ -206,16 +211,22 @@ const App = () => {
           <header className="card-header">
             <div className="card-header-content">
               <div>
-                <h1 className="title">Kvadrat Priskalkylator</h1>
-                <p className="subtitle">Beräkna konsult- och kundpris</p>
+                <h1 className="title">{t.title}</h1>
+                <p className="subtitle">{t.subtitle}</p>
               </div>
-              <button
-                type="button"
-                className="view-toggle"
-                onClick={() => setView(v => v === "simple" ? "advanced" : "simple")}
-              >
-                {view === "simple" ? "Prognos →" : "← Enkel vy"}
-              </button>
+              <div className="header-controls">
+                <div className="lang-toggle" role="group" aria-label="Language">
+                  <button type="button" className={`lang-btn${lang === 'sv' ? ' lang-btn-active' : ''}`} onClick={() => setLang('sv')}>SV</button>
+                  <button type="button" className={`lang-btn${lang === 'en' ? ' lang-btn-active' : ''}`} onClick={() => setLang('en')}>EN</button>
+                </div>
+                <button
+                  type="button"
+                  className="view-toggle"
+                  onClick={() => setView(v => v === "simple" ? "advanced" : "simple")}
+                >
+                  {view === "simple" ? t.viewForecast : t.viewSimple}
+                </button>
+              </div>
             </div>
           </header>
 
@@ -225,24 +236,24 @@ const App = () => {
               {feesSection}
               {hasValue && (
                 <section className="breakdown-section">
-                  <h2 className="breakdown-title">Fördelning per timme</h2>
+                  <h2 className="breakdown-title">{t.breakdownTitle}</h2>
                   <div className="breakdown-rows">
                     <div className="breakdown-row">
-                      <span>Kunden betalar</span>
+                      <span>{t.clientPays}</span>
                       <span className="breakdown-value">{formatSEK(clientPrice)}</span>
                     </div>
                     {parsedMiddleman > 0 && (
                       <div className="breakdown-row breakdown-deduction">
-                        <span>Mellanskär ({parsedMiddleman}%)</span>
+                        <span>{t.middlemanCutRow(parsedMiddleman)}</span>
                         <span className="breakdown-value">−{formatSEK(middlemanCut)}</span>
                       </div>
                     )}
                     <div className="breakdown-row breakdown-deduction">
-                      <span>Kvadrats andel ({parsedKvadrat}%)</span>
+                      <span>{t.kvadratCutRow(parsedKvadrat)}</span>
                       <span className="breakdown-value">−{formatSEK(kvadratCut)}</span>
                     </div>
                     <div className="breakdown-row breakdown-total">
-                      <span>Konsulten får ut</span>
+                      <span>{t.consultantGets}</span>
                       <span className="breakdown-value">{formatSEK(consultantPrice)}</span>
                     </div>
                   </div>
@@ -264,6 +275,7 @@ const App = () => {
                   overheadPerYear={parseInt(overhead) || 0}
                   kommunalskatt={parseFloat(kommunalskatt) || 0}
                   kvadratCutPerHour={kvadratCut}
+                  t={t}
                 />
               </div>
             </div>
@@ -271,7 +283,7 @@ const App = () => {
 
           <footer className="card-footer">
             <button type="button" className="reset-btn" onClick={handleReset}>
-              Återställ
+              {t.reset}
             </button>
           </footer>
         </div>
