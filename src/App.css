@@ -462,6 +462,7 @@
   .forecast-layout {
     flex-direction: column;
   }
+
   .forecast-layout-left {
     width: 100%;
     border-right: none;
