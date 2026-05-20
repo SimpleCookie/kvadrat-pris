@@ -1,4 +1,4 @@
-import { Quota } from "./Quotation"
+import type { Quota } from "./Quotation"
 
 const consultantToClientPrice = (price: number, fee: number): Quota => {
   if (fee === 0) {

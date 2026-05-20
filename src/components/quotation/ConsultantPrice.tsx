@@ -1,4 +1,4 @@
-import { Quota } from "./Quotation"
+import type { Quota } from "./Quotation"
 
 
 export const clientToConsultantPrice = (price: number, fee: number): Quota => {
