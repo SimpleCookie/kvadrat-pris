@@ -1,73 +1,245 @@
-import { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./App.css"
-import { Budget } from "./components/budget/budget"
-import { clientToConsultantPrice } from "./components/quotation/ConsultantPrice"
-import { Quotation } from "./components/quotation/Quotation"
+import {
+  calculateClientPrice,
+  calculateConsultantPrice,
+  clampFee,
+  formatSEK,
+} from "./lib/pricing"
 
+const STORAGE_KEY = "kvadrat-pris-state"
+
+interface SavedState {
+  activeField: "consultant" | "client"
+  activeValue: string
+  kvadratFee: string
+  middlemanFee: string
+}
+
+const loadState = (): Partial<SavedState> => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
 
 const App = () => {
-  const [useClientPrice, setUseClientPrice] = useState(false)
-  const [price, setPrice] = useState(800)
-  const [fee, setFee] = useState(0)
+  const saved = loadState()
+
+  const [activeField, setActiveField] = useState<"consultant" | "client">(
+    saved.activeField ?? "consultant"
+  )
+  const [activeValue, setActiveValue] = useState(saved.activeValue ?? "800")
+  const [kvadratFee, setKvadratFee] = useState(saved.kvadratFee ?? "17")
+  const [middlemanFee, setMiddlemanFee] = useState(saved.middlemanFee ?? "0")
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ activeField, activeValue, kvadratFee, middlemanFee })
+    )
+  }, [activeField, activeValue, kvadratFee, middlemanFee])
+
+  const parsedActive = parseFloat(activeValue) || 0
+  const parsedKvadrat = clampFee(parseFloat(kvadratFee) || 0)
+  const parsedMiddleman = clampFee(parseFloat(middlemanFee) || 0)
+
+  const consultantPrice =
+    activeField === "consultant"
+      ? parsedActive
+      : calculateConsultantPrice(parsedActive, parsedKvadrat, parsedMiddleman)
+
+  const clientPrice =
+    activeField === "client"
+      ? parsedActive
+      : calculateClientPrice(parsedActive, parsedKvadrat, parsedMiddleman)
+
+  // Breakdown — middleman cut first, then Kvadrat cut, remainder = consultant
+  const middlemanCut = Math.round(clientPrice * (parsedMiddleman / 100))
+  const afterMiddleman = clientPrice - middlemanCut
+  const kvadratCut = afterMiddleman - consultantPrice
+
+  const hasValue = parsedActive > 0
+
+  const handleReset = () => {
+    setActiveField("consultant")
+    setActiveValue("800")
+    setKvadratFee("17")
+    setMiddlemanFee("0")
+  }
 
   return (
     <div className="App">
       <main className="main">
-        <form className="form">
-          <div className="price-type">
-            <label htmlFor="konsultpris">
-              Konsultpris
-              <input
-                type="radio"
-                id="konsultpris"
-                value="consultant"
-                name="konsultpris"
-                checked={!useClientPrice}
-                onChange={(e) => {
-                  setUseClientPrice(false)
-                }}
-              />
-            </label>
-            <label htmlFor="kundpris">
-              Kundpris
-              <input
-                type="radio"
-                id="kundpris"
-                value="client"
-                checked={useClientPrice}
-                name="kundpris"
-                onChange={(e) => {
-                  setUseClientPrice(true)
-                }}
-              />
-            </label>
-          </div>
+        <div className="card">
+          <header className="card-header">
+            <h1 className="title">Kvadrat Priskalkylator</h1>
+            <p className="subtitle">Beräkna konsult- och kundpris</p>
+          </header>
 
-          <label className="label">
-            <span className="label-text">
-              {useClientPrice ? "Kundpris" : "Konsultpris"}:
-            </span>
-            <input
-              type="number"
-              name="price"
-              defaultValue={price}
-              onChange={(e) => setPrice(+e.target.value)}
-            />
-          </label>
-          <label className="label">
-            <span className="label-text">Mellanskär, heltal i %:</span>
-            <input
-              type="number"
-              name="price"
-              defaultValue={0}
-              onChange={(e) => setFee(+e.target.value)}
-            />
-          </label>
-        </form>
-        <div className="result">
-          <Quotation useClientPrice={useClientPrice} price={price} fee={fee} />
-          <div style={{ paddingBottom: "2em"}} />
-          <Budget price={useClientPrice ? clientToConsultantPrice(price, fee).price : price} />
+          <section className="prices-section">
+            <div
+              className={`price-field${activeField === "consultant" ? " active" : ""}`}
+            >
+              <label htmlFor="consultant-price" className="price-label">
+                Konsultpris
+              </label>
+              <div className="price-input-wrap">
+                <input
+                  id="consultant-price"
+                  type="number"
+                  inputMode="decimal"
+                  min={0}
+                  step={50}
+                  className="price-input"
+                  value={
+                    activeField === "consultant"
+                      ? activeValue
+                      : String(consultantPrice)
+                  }
+                  onChange={(e) => {
+                    setActiveField("consultant")
+                    setActiveValue(e.target.value)
+                  }}
+                  onFocus={() => setActiveField("consultant")}
+                  aria-label="Konsultpris i kronor per timme"
+                />
+                <span className="price-unit">kr/h</span>
+              </div>
+              <p className="price-hint">Det du tar hem</p>
+            </div>
+
+            <div className="price-arrow" aria-hidden="true">⇄</div>
+
+            <div
+              className={`price-field${activeField === "client" ? " active" : ""}`}
+            >
+              <label htmlFor="client-price" className="price-label">
+                Kundpris
+              </label>
+              <div className="price-input-wrap">
+                <input
+                  id="client-price"
+                  type="number"
+                  inputMode="decimal"
+                  min={0}
+                  step={50}
+                  className="price-input"
+                  value={
+                    activeField === "client" ? activeValue : String(clientPrice)
+                  }
+                  onChange={(e) => {
+                    setActiveField("client")
+                    setActiveValue(e.target.value)
+                  }}
+                  onFocus={() => setActiveField("client")}
+                  aria-label="Kundpris i kronor per timme"
+                />
+                <span className="price-unit">kr/h</span>
+              </div>
+              <p className="price-hint">Vad kunden betalar</p>
+            </div>
+          </section>
+
+          <section className="fees-section">
+            <fieldset className="fees-fieldset">
+              <legend className="fees-legend">Avgifter</legend>
+              <div className="fee-row">
+                <label htmlFor="kvadrat-fee" className="fee-label">
+                  Kvadrats andel
+                  <span
+                    className="fee-tooltip"
+                    title="Den andel av kundpriset som Kvadrat behåller"
+                    aria-label="Den andel av kundpriset som Kvadrat behåller"
+                  >
+                    ?
+                  </span>
+                </label>
+                <div className="fee-input-wrap">
+                  <input
+                    id="kvadrat-fee"
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    max={99}
+                    step={1}
+                    className="fee-input"
+                    value={kvadratFee}
+                    onChange={(e) => setKvadratFee(e.target.value)}
+                    aria-label="Kvadrats andel i procent"
+                  />
+                  <span className="fee-unit">%</span>
+                </div>
+              </div>
+              <div className="fee-row">
+                <label htmlFor="middleman-fee" className="fee-label">
+                  Mellanskär
+                  <span
+                    className="fee-tooltip"
+                    title="Avgift för eventuell förmedlare"
+                    aria-label="Avgift för eventuell förmedlare"
+                  >
+                    ?
+                  </span>
+                </label>
+                <div className="fee-input-wrap">
+                  <input
+                    id="middleman-fee"
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    max={99}
+                    step={1}
+                    className="fee-input"
+                    value={middlemanFee}
+                    onChange={(e) => setMiddlemanFee(e.target.value)}
+                    aria-label="Mellanskär i procent"
+                  />
+                  <span className="fee-unit">%</span>
+                </div>
+              </div>
+            </fieldset>
+          </section>
+
+          {hasValue && (
+            <section className="breakdown-section">
+              <h2 className="breakdown-title">Fördelning per timme</h2>
+              <div className="breakdown-rows">
+                <div className="breakdown-row">
+                  <span>Kunden betalar</span>
+                  <span className="breakdown-value">{formatSEK(clientPrice)}</span>
+                </div>
+                {parsedMiddleman > 0 && (
+                  <div className="breakdown-row breakdown-deduction">
+                    <span>Mellanskär ({parsedMiddleman}%)</span>
+                    <span className="breakdown-value">
+                      −{formatSEK(middlemanCut)}
+                    </span>
+                  </div>
+                )}
+                <div className="breakdown-row breakdown-deduction">
+                  <span>Kvadrats andel ({parsedKvadrat}%)</span>
+                  <span className="breakdown-value">
+                    −{formatSEK(kvadratCut)}
+                  </span>
+                </div>
+                <div className="breakdown-row breakdown-total">
+                  <span>Konsulten får ut</span>
+                  <span className="breakdown-value">
+                    {formatSEK(consultantPrice)}
+                  </span>
+                </div>
+              </div>
+            </section>
+          )}
+
+          <footer className="card-footer">
+            <button type="button" className="reset-btn" onClick={handleReset}>
+              Återställ
+            </button>
+          </footer>
         </div>
       </main>
     </div>
