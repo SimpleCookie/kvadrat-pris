@@ -361,9 +361,90 @@
   outline-offset: 2px;
 }
 
-/* ─── Wider fee input for kr amounts ─────────────────────────────────────── */
-.fee-input--wide {
-  width: 5.5rem;
+/* ─── Forecast settings — 2×2 grid ──────────────────────────────────────── */
+.forecast-settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.forecast-settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.forecast-settings-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.forecast-settings-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.75rem;
+}
+
+.forecast-settings-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+  -moz-appearance: textfield;
+}
+
+.forecast-settings-input::-webkit-outer-spin-button,
+.forecast-settings-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+/* ─── Forecast results ───────────────────────────────────────────────────── */
+.forecast-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.forecast-context {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.forecast-block {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  margin-top: 1.25rem;
+}
+
+.forecast-block:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.forecast-block-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.875rem;
 }
 
 /* ─── Intermediate sub-total row ─────────────────────────────────────────── */
@@ -373,7 +454,7 @@
   font-weight: 600;
 }
 
-/* ─── Forecast-specific row colours ──────────────────────────────────────── */
+/* ─── Forecast row colour overrides ──────────────────────────────────────── */
 .forecast-dividend .breakdown-value {
   color: var(--total);
 }
@@ -384,32 +465,33 @@
 }
 
 /* ─── Monthly take-home highlight ────────────────────────────────────────── */
-.forecast-monthly-highlight {
+.forecast-monthly-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0.75rem;
-  padding: 0.875rem 1rem;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 1rem 1.125rem;
   background: var(--active-bg);
   border-radius: var(--radius-sm);
 }
 
-.forecast-monthly-label {
-  font-size: 0.875rem;
+.forecast-monthly-card-label {
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.forecast-monthly-value {
-  font-size: 1.5rem;
+.forecast-monthly-card-amount {
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--total);
   font-variant-numeric: tabular-nums;
 }
 
-/* ─── Disclaimer ──────────────────────────────────────────────────────────── */
+/* ─── Disclaimer ─────────────────────────────────────────────────────────── */
 .forecast-disclaimer {
-  margin-top: 0.875rem;
+  margin-top: 1rem;
   font-size: 0.75rem;
   color: var(--text-secondary);
   line-height: 1.5;
