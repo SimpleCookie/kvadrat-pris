@@ -5,7 +5,7 @@ import App from './App'
 test('renders both price fields', () => {
   render(<App />)
   expect(screen.getByLabelText(/konsultpris/i)).toBeInTheDocument()
-  expect(screen.getByLabelText(/kundpris/i)).toBeInTheDocument()
+  expect(screen.getByLabelText(/^kundpris/i)).toBeInTheDocument()
 })
 
 test('renders fee inputs with defaults', () => {
