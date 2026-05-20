@@ -9,7 +9,7 @@ export const clientToConsultantPrice = (price: number, fee: number): Quota => {
     }
   }
   return {
-    formula: `${price} * (1 - ${fee}/100) * 0.83`, 
+    formula: `${price} * (1 - ${fee}/100) * 0.83`,
     price: Math.round(price * (1 - fee / 100) * 0.83)
   }
 }
@@ -25,7 +25,7 @@ export const ConsultantPrice = ({ price, fee }: Props) => {
     <>
       <div>
         Konsulten får ut: {quota.price} kr
-                </div>
+      </div>
       <div>Kunden betalar: {price} kr</div>
       <div>Formel: {quota.formula}</div>
     </>

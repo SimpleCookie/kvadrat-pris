@@ -24,7 +24,7 @@ export const ClientPrice = ({ price, fee }: Props) => {
     <>
       <div>Konsulten får ut: {price} kr</div>
       <div>Kunden betalar: {quota.price} kr</div>
-      <div>Formel: {quota.formula }</div>
+      <div>Formel: {quota.formula}</div>
     </>
   )
 }

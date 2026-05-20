@@ -6,6 +6,7 @@ import {
   clampFee,
   formatSEK,
 } from "./lib/pricing"
+import { AdvancedView } from "./components/AdvancedView"
 
 const STORAGE_KEY = "kvadrat-pris-state"
 
@@ -27,6 +28,8 @@ const loadState = (): Partial<SavedState> => {
 
 const App = () => {
   const saved = loadState()
+
+  const [view, setView] = useState<"simple" | "advanced">("simple")
 
   const [activeField, setActiveField] = useState<"consultant" | "client">(
     saved.activeField ?? "consultant"
@@ -71,12 +74,23 @@ const App = () => {
   }
 
   return (
-    <div className="App">
+    <div className={`App${view === "advanced" ? " view-advanced" : ""}`}>
       <main className="main">
         <div className="card">
           <header className="card-header">
-            <h1 className="title">Kvadrat Priskalkylator</h1>
-            <p className="subtitle">Beräkna konsult- och kundpris</p>
+            <div className="card-header-content">
+              <div>
+                <h1 className="title">Kvadrat Priskalkylator</h1>
+                <p className="subtitle">Beräkna konsult- och kundpris</p>
+              </div>
+              <button
+                type="button"
+                className="view-toggle"
+                onClick={() => setView(v => v === "simple" ? "advanced" : "simple")}
+              >
+                {view === "simple" ? "Prognos →" : "← Enkel vy"}
+              </button>
+            </div>
           </header>
 
           <section className="prices-section">
@@ -203,7 +217,7 @@ const App = () => {
             </fieldset>
           </section>
 
-          {hasValue && (
+          {view === "simple" && hasValue && (
             <section className="breakdown-section">
               <h2 className="breakdown-title">Fördelning per timme</h2>
               <div className="breakdown-rows">
@@ -233,6 +247,10 @@ const App = () => {
                 </div>
               </div>
             </section>
+          )}
+
+          {view === "advanced" && (
+            <AdvancedView consultantRatePerHour={consultantPrice} />
           )}
 
           <footer className="card-footer">
