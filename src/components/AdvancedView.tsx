@@ -83,7 +83,15 @@ export const AdvancedView = (props: Props) => {
               </div>
               {r.retainedInCompany > 0 && (
                 <div className="breakdown-row forecast-retained">
-                  <span>Kvar i bolaget</span>
+                  <span>
+                    Kvar i bolaget
+                    <span
+                      className="fee-tooltip"
+                      data-tooltip="Dina pengar — kan tas ut som framtida lön eller utdelning när det passar."
+                      aria-label="Dina pengar — kan tas ut som framtida lön eller utdelning"
+                    >?</span>
+                    <span className="forecast-retained-note">dina pengar</span>
+                  </span>
                   <span className="breakdown-value">{formatSEK(r.retainedInCompany)}</span>
                 </div>
               )}
