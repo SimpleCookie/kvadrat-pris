@@ -2,7 +2,6 @@ import {
   calculateForecast,
   calculateEquivalentEmployeeGross,
   SCHABLONBELOPP,
-  SOCIAL_FEE_RATE,
   type ForecastInputs,
 } from '../lib/forecast'
 import { formatSEK } from '../lib/pricing'
@@ -15,8 +14,6 @@ export const AdvancedView = (props: Props) => {
 
   const equivGrossYear = calculateEquivalentEmployeeGross(r.totalTakeHomeYear, kommunalskatt)
   const equivGrossMonth = Math.round(equivGrossYear / 12)
-  const equivEmployerCostYear = Math.round(equivGrossYear * (1 + SOCIAL_FEE_RATE))
-  const equivEmployerCostMonth = Math.round(equivEmployerCostYear / 12)
 
   if (!consultantRatePerHour) {
     return (
@@ -151,21 +148,6 @@ export const AdvancedView = (props: Props) => {
           <div className="breakdown-row breakdown-sub-total">
             <span>per månad</span>
             <span className="breakdown-value">{formatSEK(equivGrossMonth)}</span>
-          </div>
-          <div className="breakdown-row" style={{ marginTop: '0.75rem' }}>
-            <span>
-              Arbetsgivarkostnad / år
-              <span
-                className="fee-tooltip"
-                data-tooltip="Bruttolön + arbetsgivaravgift (31,42%). Vad arbetsgivaren betalar totalt."
-                aria-label="Arbetsgivarkostnad inklusive arbetsgivaravgift"
-              >?</span>
-            </span>
-            <span className="breakdown-value">{formatSEK(equivEmployerCostYear)}</span>
-          </div>
-          <div className="breakdown-row breakdown-sub-total">
-            <span>per månad</span>
-            <span className="breakdown-value">{formatSEK(equivEmployerCostMonth)}</span>
           </div>
         </div>
       </div>
