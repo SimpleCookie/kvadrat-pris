@@ -1,22 +1,23 @@
 import { Tooltip } from '../../components/Tooltip'
 import { type ForecastSettings } from '../../store/useAppStore'
-import { type T } from '../../lib/i18n'
+import { useTranslations } from '../../store/useDerived'
 
 type Props = {
   settings: ForecastSettings
   onSettingChange: <K extends keyof ForecastSettings>(key: K, value: ForecastSettings[K]) => void
-  t: T
 }
 
-export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props) => (
+export const ForecastSettingsSection = ({ settings, onSettingChange }: Props) => {
+  const strings = useTranslations()
+  return (
   <section className="fees-section">
     <fieldset className="fees-fieldset">
-      <legend className="fees-legend">{t.settingsLegend}</legend>
+      <legend className="fees-legend">{strings.settingsLegend}</legend>
       <div className="forecast-settings-grid">
         <div className="forecast-settings-field">
           <span className="forecast-settings-label">
-            <label htmlFor="billable-hours">{t.billableHours}</label>
-            <Tooltip content={t.billableHoursTooltip} ariaLabel={t.billableHoursAria} />
+            <label htmlFor="billable-hours">{strings.billableHours}</label>
+            <Tooltip content={strings.billableHoursTooltip} ariaLabel={strings.billableHoursAria} />
           </span>
           <div className="forecast-settings-input-wrap">
             <input
@@ -29,16 +30,16 @@ export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props)
               className="forecast-settings-input"
               value={settings.billableHours}
               onChange={(e) => onSettingChange('billableHours', e.target.value)}
-              aria-label={t.billableHoursAria}
+              aria-label={strings.billableHoursAria}
             />
             <span className="fee-unit">h</span>
           </div>
-          <p className="price-hint">{t.billableHoursHint}</p>
+          <p className="price-hint">{strings.billableHoursHint}</p>
         </div>
         <div className="forecast-settings-field">
           <span className="forecast-settings-label">
-            <label htmlFor="monthly-salary">{t.monthlySalary}</label>
-            <Tooltip content={t.monthlySalaryTooltip} ariaLabel={t.monthlySalaryAria} />
+            <label htmlFor="monthly-salary">{strings.monthlySalary}</label>
+            <Tooltip content={strings.monthlySalaryTooltip} ariaLabel={strings.monthlySalaryAria} />
           </span>
           <div className="forecast-settings-input-wrap">
             <input
@@ -50,15 +51,15 @@ export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props)
               className="forecast-settings-input"
               value={settings.monthlySalary}
               onChange={(e) => onSettingChange('monthlySalary', e.target.value)}
-              aria-label={t.monthlySalaryAria}
+              aria-label={strings.monthlySalaryAria}
             />
             <span className="fee-unit">kr</span>
           </div>
         </div>
         <div className="forecast-settings-field">
           <span className="forecast-settings-label">
-            <label htmlFor="pension">{t.pension}</label>
-            <Tooltip content={t.pensionTooltip} ariaLabel={t.pensionAria} />
+            <label htmlFor="pension">{strings.pension}</label>
+            <Tooltip content={strings.pensionTooltip} ariaLabel={strings.pensionAria} />
           </span>
           <div className="forecast-settings-input-wrap">
             <input
@@ -71,7 +72,7 @@ export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props)
               className="forecast-settings-input"
               value={settings.pensionValue}
               onChange={(e) => onSettingChange('pensionValue', e.target.value)}
-              aria-label={t.pensionAria}
+              aria-label={strings.pensionAria}
             />
             <div className="pension-mode-toggle" role="group" aria-label="Pension unit">
               <button
@@ -89,8 +90,8 @@ export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props)
         </div>
         <div className="forecast-settings-field">
           <span className="forecast-settings-label">
-            <label htmlFor="overhead">{t.overheadLabel}</label>
-            <Tooltip content={t.overheadTooltip} ariaLabel={t.overheadAria} />
+            <label htmlFor="overhead">{strings.overheadLabel}</label>
+            <Tooltip content={strings.overheadTooltip} ariaLabel={strings.overheadAria} />
           </span>
           <div className="forecast-settings-input-wrap">
             <input
@@ -102,13 +103,13 @@ export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props)
               className="forecast-settings-input"
               value={settings.overhead}
               onChange={(e) => onSettingChange('overhead', e.target.value)}
-              aria-label={t.overheadAria}
+              aria-label={strings.overheadAria}
             />
             <span className="fee-unit">kr</span>
           </div>
         </div>
         <div className="forecast-settings-field">
-          <label htmlFor="kommunalskatt" className="forecast-settings-label">{t.municipalTax}</label>
+          <label htmlFor="kommunalskatt" className="forecast-settings-label">{strings.municipalTax}</label>
           <div className="forecast-settings-input-wrap">
             <input
               id="kommunalskatt"
@@ -120,7 +121,7 @@ export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props)
               className="forecast-settings-input"
               value={settings.kommunalskatt}
               onChange={(e) => onSettingChange('kommunalskatt', e.target.value)}
-              aria-label={t.municipalTaxAria}
+              aria-label={strings.municipalTaxAria}
             />
             <span className="fee-unit">%</span>
           </div>
@@ -128,4 +129,5 @@ export const ForecastSettingsSection = ({ settings, onSettingChange, t }: Props)
       </div>
     </fieldset>
   </section>
-)
+  )
+}

@@ -4,11 +4,8 @@ import { PricesSection } from '../../components/PricesSection'
 import { FeesSection } from '../../components/FeesSection'
 import { ForecastSettingsSection } from './ForecastSettingsSection'
 import { ForecastResults } from './ForecastResults'
-import { type T } from '../../lib/i18n'
 
-type Props = { t: T }
-
-export const AdvancedView = ({ t }: Props) => {
+export const AdvancedView = () => {
   const { activeField, activeValue, kvadratFee, middlemanFee, billableHours, monthlySalary, overhead, kommunalskatt, pensionMode, pensionValue, setPrice, setActiveField, setKvadratFee, setMiddlemanFee, updateSetting } = useAppStore()
   const derived = usePricingDerived()
   const pensionPerMonth = usePensionPerMonth()
@@ -23,16 +20,14 @@ export const AdvancedView = ({ t }: Props) => {
           clientPrice={derived.clientPrice}
           onPriceChange={setPrice}
           onFieldFocus={setActiveField}
-          t={t}
         />
         <FeesSection
           kvadratFee={kvadratFee}
           middlemanFee={middlemanFee}
           onKvadratChange={setKvadratFee}
           onMiddlemanChange={setMiddlemanFee}
-          t={t}
         />
-        <ForecastSettingsSection settings={settings} onSettingChange={updateSetting} t={t} />
+        <ForecastSettingsSection settings={settings} onSettingChange={updateSetting} />
       </div>
       <div className="forecast-layout-right">
         <ForecastResults
@@ -43,7 +38,6 @@ export const AdvancedView = ({ t }: Props) => {
           kommunalskatt={parseFloat(kommunalskatt) || 0}
           kvadratCutPerHour={derived.kvadratCut}
           pensionPerMonth={pensionPerMonth}
-          t={t}
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { calculateClientPrice, calculateConsultantPrice, clampFee } from '../lib/pricing'
 import { calculatePensionPerMonth } from '../lib/forecast'
+import { translations } from '../lib/i18n'
 import { useAppStore } from './useAppStore'
 
 export const usePricingDerived = () => {
@@ -46,4 +47,9 @@ export const usePensionPerMonth = () => {
     value: parseFloat(pensionValue) || 0,
     monthlySalaryGross: parseInt(monthlySalary) || 0,
   })
+}
+
+export const useTranslations = () => {
+  const lang = useAppStore(s => s.lang)
+  return translations[lang]
 }

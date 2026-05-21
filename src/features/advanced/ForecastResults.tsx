@@ -5,18 +5,18 @@ import {
   type ForecastInputs,
 } from '../../lib/forecast'
 import { formatSEK } from '../../lib/pricing'
-import { type T } from '../../lib/i18n'
+import { useTranslations } from '../../store/useDerived'
 import { Tooltip } from '../../components/Tooltip'
 
 type Props = ForecastInputs & {
   kvadratCutPerHour?: number
   pensionPerMonth?: number
-  t: T
 }
 
 export const ForecastResults = (props: Props) => {
+  const strings = useTranslations()
   const r = calculateForecast(props)
-  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour, pensionPerMonth, t } = props
+  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour, pensionPerMonth } = props
 
   const equivGrossYear = calculateEquivalentEmployeeGross(r.totalTakeHomeYear, kommunalskatt)
   const equivGrossMonth = Math.round(equivGrossYear / 12)
@@ -26,7 +26,7 @@ export const ForecastResults = (props: Props) => {
   if (!consultantRatePerHour) {
     return (
       <div className="forecast-empty">
-        {t.enterPrice}
+        {strings.enterPrice}
       </div>
     )
   }
@@ -38,38 +38,38 @@ export const ForecastResults = (props: Props) => {
       <p className="forecast-context">
         {billableHoursPerYear.toLocaleString('sv-SE')} h
         &nbsp;×&nbsp;{formatSEK(consultantRatePerHour)}
-        &nbsp;=&nbsp;<strong>{formatSEK(r.grossRevenue)}{t.perYearGross}</strong>
+        &nbsp;=&nbsp;<strong>{formatSEK(r.grossRevenue)}{strings.perYearGross}</strong>
       </p>
       {kvadratCutPerHour != null && kvadratCutPerHour > 0 && (
         <p className="forecast-context forecast-kvadrat-cut">
-          {t.kvadratShareLabel}{' '}
-          <strong>{formatSEK(kvadratCutPerHour * billableHoursPerYear)}{t.perYear}</strong>
+          {strings.kvadratShareLabel}{' '}
+          <strong>{formatSEK(kvadratCutPerHour * billableHoursPerYear)}{strings.perYear}</strong>
           {' '}({kvadratCutPerHour.toLocaleString('sv-SE')} kr/h)
         </p>
       )}
 
       {/* ── Bolaget ── */}
       <div className="forecast-block">
-        <h2 className="forecast-block-title">{t.companyBlock}</h2>
+        <h2 className="forecast-block-title">{strings.companyBlock}</h2>
         <div className="breakdown-rows">
           <div className="breakdown-row">
-            <span>{t.grossRevenue}</span>
+            <span>{strings.grossRevenue}</span>
             <span className="breakdown-value">{formatSEK(r.grossRevenue)}</span>
           </div>
           <div className="breakdown-row breakdown-deduction">
-            <span>{t.overheadRow}</span>
+            <span>{strings.overheadRow}</span>
             <span className="breakdown-value">−{formatSEK(r.overhead)}</span>
           </div>
           <div className="breakdown-row breakdown-deduction">
-            <span>{t.salaryGrossRow(monthlySalaryGross.toLocaleString('sv-SE'))}</span>
+            <span>{strings.salaryGrossRow(monthlySalaryGross.toLocaleString('sv-SE'))}</span>
             <span className="breakdown-value">−{formatSEK(r.salaryGross)}</span>
           </div>
           <div className="breakdown-row breakdown-deduction">
-            <span>{t.socialFees}</span>
+            <span>{strings.socialFees}</span>
             <span className="breakdown-value">−{formatSEK(r.socialFees)}</span>
           </div>
           <div className={`breakdown-row breakdown-sub-total${r.preTaxProfit < 0 ? ' breakdown-deduction' : ''}`}>
-            <span>{t.preTaxProfit}</span>
+            <span>{strings.preTaxProfit}</span>
             <span className="breakdown-value">
               {r.preTaxProfit < 0 ? '−' : ''}{formatSEK(Math.abs(r.preTaxProfit))}
             </span>
@@ -78,32 +78,32 @@ export const ForecastResults = (props: Props) => {
           {r.preTaxProfit > 0 && (
             <>
               <div className="breakdown-row breakdown-deduction">
-                <span>{t.corporateTax}</span>
+                <span>{strings.corporateTax}</span>
                 <span className="breakdown-value">−{formatSEK(r.corporateTax)}</span>
               </div>
               <div className="breakdown-row breakdown-sub-total">
-                <span>{t.profitAfterTax}</span>
+                <span>{strings.profitAfterTax}</span>
                 <span className="breakdown-value">{formatSEK(r.profitAfterTax)}</span>
               </div>
               <div className="breakdown-row breakdown-deduction">
                 <span>
-                  {t.dividend}
+                  {strings.dividend}
                   <Tooltip
-                    content={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
-                    ariaLabel={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
+                    content={strings.dividendTooltip(formatSEK(SCHABLONBELOPP))}
+                    ariaLabel={strings.dividendTooltip(formatSEK(SCHABLONBELOPP))}
                   />
                 </span>
                 <span className="breakdown-value">−{formatSEK(r.dividendGross)}</span>
               </div>
               <div className="breakdown-row breakdown-deduction">
-                <span>{t.dividendTax}</span>
+                <span>{strings.dividendTax}</span>
                 <span className="breakdown-value">−{formatSEK(r.dividendTax)}</span>
               </div>
               {(pensionPerMonth ?? 0) > 0 && (
                 <div className="breakdown-row breakdown-deduction">
                   <span>
-                    {t.pensionRow}
-                    <Tooltip content={t.pensionRowTooltip} ariaLabel={t.pensionRowTooltip} />
+                    {strings.pensionRow}
+                    <Tooltip content={strings.pensionRowTooltip} ariaLabel={strings.pensionRowTooltip} />
                   </span>
                   <span className="breakdown-value">−{formatSEK(pensionYear)}</span>
                 </div>
@@ -111,9 +111,9 @@ export const ForecastResults = (props: Props) => {
               {pensionAdjustedRetained > 0 && (
                 <div className="breakdown-row forecast-retained">
                   <span>
-                    {t.retainedLabel}
-                    <Tooltip content={t.retainedTooltip} ariaLabel={t.retainedAriaLabel} />
-                    <span className="forecast-retained-note">{t.retainedNote}</span>
+                    {strings.retainedLabel}
+                    <Tooltip content={strings.retainedTooltip} ariaLabel={strings.retainedAriaLabel} />
+                    <span className="forecast-retained-note">{strings.retainedNote}</span>
                   </span>
                   <span className="breakdown-value">{formatSEK(pensionAdjustedRetained)}</span>
                 </div>
@@ -121,15 +121,15 @@ export const ForecastResults = (props: Props) => {
               {(pensionPerMonth ?? 0) > 0 && (
                 <div className="breakdown-row forecast-pension-pot">
                   <span>
-                    {t.pensionRow}
-                    <Tooltip content={t.pensionRowTooltip} ariaLabel={t.pensionRowTooltip} />
-                    <span className="forecast-retained-note">{t.pensionSavingsNote}</span>
+                    {strings.pensionRow}
+                    <Tooltip content={strings.pensionRowTooltip} ariaLabel={strings.pensionRowTooltip} />
+                    <span className="forecast-retained-note">{strings.pensionSavingsNote}</span>
                   </span>
                   <span className="breakdown-value">{formatSEK(pensionYear)}</span>
                 </div>
               )}
               {(pensionPerMonth ?? 0) > 0 && pensionYear > r.retainedInCompany && (
-                <p className="forecast-pension-warning">{t.pensionExceedsRetained}</p>
+                <p className="forecast-pension-warning">{strings.pensionExceedsRetained}</p>
               )}
             </>
           )}
@@ -138,26 +138,26 @@ export const ForecastResults = (props: Props) => {
 
       {/* ── Du ── */}
       <div className="forecast-block">
-        <h2 className="forecast-block-title">{t.youBlock}</h2>
+        <h2 className="forecast-block-title">{strings.youBlock}</h2>
         <div className="breakdown-rows">
           <div className="breakdown-row">
-            <span>{t.netSalaryYear}</span>
+            <span>{strings.netSalaryYear}</span>
             <span className="breakdown-value">{formatSEK(r.salaryNet)}</span>
           </div>
           {r.dividendNet > 0 && (
             <div className="breakdown-row forecast-dividend">
-              <span>{t.netDividend}</span>
+              <span>{strings.netDividend}</span>
               <span className="breakdown-value">{formatSEK(r.dividendNet)}</span>
             </div>
           )}
           <div className="breakdown-row breakdown-total">
-            <span>{t.netPerYear}</span>
+            <span>{strings.netPerYear}</span>
             <span className="breakdown-value">{formatSEK(r.totalTakeHomeYear)}</span>
           </div>
         </div>
 
         <div className="forecast-monthly-card">
-          <span className="forecast-monthly-card-label">{t.netPerMonth}</span>
+          <span className="forecast-monthly-card-label">{strings.netPerMonth}</span>
           <span className="forecast-monthly-card-amount">{formatSEK(r.totalTakeHomeMonth)}</span>
         </div>
       </div>
@@ -165,21 +165,21 @@ export const ForecastResults = (props: Props) => {
       {/* ── Som anställd ── */}
       <div className="forecast-block forecast-block-comparison">
         <h2 className="forecast-block-title">
-          {t.employeeBlock}
-          <Tooltip content={t.employeeTooltip} ariaLabel={t.employeeAriaLabel} />
+          {strings.employeeBlock}
+          <Tooltip content={strings.employeeTooltip} ariaLabel={strings.employeeAriaLabel} />
         </h2>
         <p className="forecast-comparison-text">
           {pensionPerMonth && pensionPerMonth > 0
-            ? t.employeeComparisonTextWithPension(
+            ? strings.employeeComparisonTextWithPension(
               `${formatSEK(equivGrossMonth)}/m\u00e5n`,
               formatSEK(pensionPerMonth)
             )
-            : t.employeeComparisonText(`${formatSEK(equivGrossMonth)}/m\u00e5n`)}
+            : strings.employeeComparisonText(`${formatSEK(equivGrossMonth)}/m\u00e5n`)}
         </p>
       </div>
 
       <p className="forecast-disclaimer">
-        {t.disclaimer(kommunalskatt)}
+        {strings.disclaimer(kommunalskatt)}
       </p>
     </section>
   )

@@ -3,11 +3,8 @@ import { usePricingDerived } from '../../store/useDerived'
 import { PricesSection } from '../../components/PricesSection'
 import { FeesSection } from '../../components/FeesSection'
 import { SimpleBreakdown } from './SimpleBreakdown'
-import { type T } from '../../lib/i18n'
 
-type Props = { t: T }
-
-export const SimpleView = ({ t }: Props) => {
+export const SimpleView = () => {
   const { activeField, activeValue, kvadratFee, middlemanFee, setPrice, setActiveField, setKvadratFee, setMiddlemanFee } = useAppStore()
   const derived = usePricingDerived()
   return (
@@ -19,14 +16,12 @@ export const SimpleView = ({ t }: Props) => {
         clientPrice={derived.clientPrice}
         onPriceChange={setPrice}
         onFieldFocus={setActiveField}
-        t={t}
       />
       <FeesSection
         kvadratFee={kvadratFee}
         middlemanFee={middlemanFee}
         onKvadratChange={setKvadratFee}
         onMiddlemanChange={setMiddlemanFee}
-        t={t}
       />
       {derived.hasValue && (
         <SimpleBreakdown
@@ -36,7 +31,6 @@ export const SimpleView = ({ t }: Props) => {
           kvadratCut={derived.kvadratCut}
           parsedMiddleman={derived.parsedMiddleman}
           parsedKvadrat={derived.parsedKvadrat}
-          t={t}
         />
       )}
     </>

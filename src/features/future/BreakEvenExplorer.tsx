@@ -4,7 +4,7 @@ import {
   breakEvenPriceForHours,
   breakEvenHoursForPrice,
 } from '../../lib/runway'
-import { type T } from '../../lib/i18n'
+import { useTranslations } from '../../store/useDerived'
 
 const HOURS_MIN = 800
 const HOURS_MAX = 2400
@@ -20,7 +20,6 @@ type Props = {
   pensionPerMonth: number
   initialHours: number
   initialPrice: number
-  t: T
 }
 
 export const BreakEvenExplorer = ({
@@ -29,8 +28,8 @@ export const BreakEvenExplorer = ({
   pensionPerMonth,
   initialHours,
   initialPrice,
-  t,
 }: Props) => {
+  const strings = useTranslations()
   const breakEvenRevenue = calculateBreakEvenRevenue(monthlySalaryGross, overheadPerYear, pensionPerMonth)
 
   // Hours is the single source of truth; price is always derived.
@@ -58,13 +57,13 @@ export const BreakEvenExplorer = ({
 
   return (
     <div className="forecast-block">
-      <h2 className="forecast-block-title">{t.breakEvenTitle}</h2>
-      <p className="forecast-comparison-text">{t.breakEvenIntro}</p>
+      <h2 className="forecast-block-title">{strings.breakEvenTitle}</h2>
+      <p className="forecast-comparison-text">{strings.breakEvenIntro}</p>
 
       {/* Reference line — current main-input values */}
       {initialPrice > 0 && (
         <p className="forecast-context">
-          {t.breakEvenCurrent(
+          {strings.breakEvenCurrent(
             initialHours.toLocaleString('sv-SE'),
             Math.round(initialPrice).toLocaleString('sv-SE'),
             Math.round(initialPrice * initialHours).toLocaleString('sv-SE'),
@@ -75,7 +74,7 @@ export const BreakEvenExplorer = ({
       {/* ── Hours slider ── */}
       <div className="range-row">
         <div className="range-header">
-          <span className="range-label">{t.breakEvenHoursLabel}</span>
+          <span className="range-label">{strings.breakEvenHoursLabel}</span>
           <input
             type="number"
             className="range-value-input"
@@ -88,7 +87,7 @@ export const BreakEvenExplorer = ({
               if (!isNaN(parsed)) setHours(clampHours(parsed))
               setHoursDraft(null)
             }}
-            aria-label={t.breakEvenHoursLabel}
+            aria-label={strings.breakEvenHoursLabel}
           />
         </div>
         <input
@@ -99,14 +98,14 @@ export const BreakEvenExplorer = ({
           step={HOURS_STEP}
           value={hours}
           onChange={e => setHours(Number(e.target.value))}
-          aria-label={t.breakEvenHoursLabel}
+          aria-label={strings.breakEvenHoursLabel}
         />
       </div>
 
       {/* ── Price slider (derived, but interactive) ── */}
       <div className="range-row">
         <div className="range-header">
-          <span className="range-label">{t.breakEvenPriceLabel}</span>
+          <span className="range-label">{strings.breakEvenPriceLabel}</span>
           <span className="range-value">
             <input
               type="number"
@@ -123,7 +122,7 @@ export const BreakEvenExplorer = ({
                 }
                 setPriceDraft(null)
               }}
-              aria-label={t.breakEvenPriceLabel}
+              aria-label={strings.breakEvenPriceLabel}
             />
             <span>kr/h</span>
           </span>
@@ -136,14 +135,14 @@ export const BreakEvenExplorer = ({
           step={PRICE_STEP}
           value={priceSliderValue}
           onChange={e => handlePriceSliderChange(Number(e.target.value))}
-          aria-label={t.breakEvenPriceLabel}
+          aria-label={strings.breakEvenPriceLabel}
         />
       </div>
 
       {/* ── Break-even revenue (constant) ── */}
       <div className="breakdown-rows" style={{ marginTop: '1rem' }}>
         <div className="breakdown-row forecast-retained">
-          <span>{t.breakEvenRevenueLabel}</span>
+          <span>{strings.breakEvenRevenueLabel}</span>
           <span className="breakdown-value">
             {breakEvenRevenue.toLocaleString('sv-SE', { style: 'currency', currency: 'SEK', maximumFractionDigits: 0 })}
           </span>
@@ -151,7 +150,7 @@ export const BreakEvenExplorer = ({
       </div>
 
       <button type="button" className="reset-btn" onClick={handleReset} style={{ marginTop: '0.75rem' }}>
-        {t.breakEvenReset}
+        {strings.breakEvenReset}
       </button>
     </div>
   )

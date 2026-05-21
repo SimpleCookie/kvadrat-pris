@@ -1,6 +1,6 @@
 export type Lang = 'sv' | 'en'
 
-export type T = {
+export type Translations = {
   // Header
   title: string
   subtitle: string
@@ -111,7 +111,7 @@ export type T = {
   disclaimer: (rate: number) => string
 }
 
-export const translations: Record<Lang, T> = {
+export const translations: Record<Lang, Translations> = {
   sv: {
     title: 'Kvadrat Priskalkylator',
     subtitle: 'Beräkna konsult- och kundpris',

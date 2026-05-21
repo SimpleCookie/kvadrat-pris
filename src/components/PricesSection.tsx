@@ -1,4 +1,4 @@
-import { type T } from '../lib/i18n'
+import { useTranslations } from '../store/useDerived'
 
 type Props = {
   activeField: 'consultant' | 'client'
@@ -7,7 +7,6 @@ type Props = {
   clientPrice: number
   onPriceChange: (field: 'consultant' | 'client', value: string) => void
   onFieldFocus: (field: 'consultant' | 'client') => void
-  t: T
 }
 
 export const PricesSection = ({
@@ -17,11 +16,12 @@ export const PricesSection = ({
   clientPrice,
   onPriceChange,
   onFieldFocus,
-  t,
-}: Props) => (
+}: Props) => {
+  const strings = useTranslations()
+  return (
   <section className="prices-section">
     <div className={`price-field${activeField === 'consultant' ? ' active' : ''}`}>
-      <label htmlFor="consultant-price" className="price-label">{t.consultantPrice}</label>
+      <label htmlFor="consultant-price" className="price-label">{strings.consultantPrice}</label>
       <div className="price-input-wrap">
         <input
           id="consultant-price"
@@ -33,15 +33,15 @@ export const PricesSection = ({
           value={activeField === 'consultant' ? activeValue : String(consultantPrice)}
           onChange={(e) => onPriceChange('consultant', e.target.value)}
           onFocus={() => onFieldFocus('consultant')}
-          aria-label={t.consultantPriceAria}
+          aria-label={strings.consultantPriceAria}
         />
         <span className="price-unit">kr/h</span>
       </div>
-      <p className="price-hint">{t.consultantPriceHint}</p>
+      <p className="price-hint">{strings.consultantPriceHint}</p>
     </div>
     <div className="price-arrow" aria-hidden="true">⇄</div>
     <div className={`price-field${activeField === 'client' ? ' active' : ''}`}>
-      <label htmlFor="client-price" className="price-label">{t.clientPrice}</label>
+      <label htmlFor="client-price" className="price-label">{strings.clientPrice}</label>
       <div className="price-input-wrap">
         <input
           id="client-price"
@@ -53,11 +53,12 @@ export const PricesSection = ({
           value={activeField === 'client' ? activeValue : String(clientPrice)}
           onChange={(e) => onPriceChange('client', e.target.value)}
           onFocus={() => onFieldFocus('client')}
-          aria-label={t.clientPriceAria}
+          aria-label={strings.clientPriceAria}
         />
         <span className="price-unit">kr/h</span>
       </div>
-      <p className="price-hint">{t.clientPriceHint}</p>
+      <p className="price-hint">{strings.clientPriceHint}</p>
     </div>
   </section>
-)
+  )
+}

@@ -1,22 +1,23 @@
 import { Tooltip } from './Tooltip'
-import { type T } from '../lib/i18n'
+import { useTranslations } from '../store/useDerived'
 
 type Props = {
   kvadratFee: string
   middlemanFee: string
   onKvadratChange: (value: string) => void
   onMiddlemanChange: (value: string) => void
-  t: T
 }
 
-export const FeesSection = ({ kvadratFee, middlemanFee, onKvadratChange, onMiddlemanChange, t }: Props) => (
+export const FeesSection = ({ kvadratFee, middlemanFee, onKvadratChange, onMiddlemanChange }: Props) => {
+  const strings = useTranslations()
+  return (
   <section className="fees-section">
     <fieldset className="fees-fieldset">
-      <legend className="fees-legend">{t.feesLegend}</legend>
+      <legend className="fees-legend">{strings.feesLegend}</legend>
       <div className="fee-row">
         <span className="fee-label">
-          <label htmlFor="kvadrat-fee">{t.kvadratShare}</label>
-          <Tooltip content={t.kvadratShareTooltip} ariaLabel={t.kvadratShareTooltip} />
+          <label htmlFor="kvadrat-fee">{strings.kvadratShare}</label>
+          <Tooltip content={strings.kvadratShareTooltip} ariaLabel={strings.kvadratShareTooltip} />
         </span>
         <div className="fee-input-wrap">
           <input
@@ -29,15 +30,15 @@ export const FeesSection = ({ kvadratFee, middlemanFee, onKvadratChange, onMiddl
             className="fee-input"
             value={kvadratFee}
             onChange={(e) => onKvadratChange(e.target.value)}
-            aria-label={t.kvadratShare}
+            aria-label={strings.kvadratShare}
           />
           <span className="fee-unit">%</span>
         </div>
       </div>
       <div className="fee-row">
         <span className="fee-label">
-          <label htmlFor="middleman-fee">{t.middleman}</label>
-          <Tooltip content={t.middlemanTooltip} ariaLabel={t.middlemanTooltip} />
+          <label htmlFor="middleman-fee">{strings.middleman}</label>
+          <Tooltip content={strings.middlemanTooltip} ariaLabel={strings.middlemanTooltip} />
         </span>
         <div className="fee-input-wrap">
           <input
@@ -50,11 +51,12 @@ export const FeesSection = ({ kvadratFee, middlemanFee, onKvadratChange, onMiddl
             className="fee-input"
             value={middlemanFee}
             onChange={(e) => onMiddlemanChange(e.target.value)}
-            aria-label={t.middleman}
+            aria-label={strings.middleman}
           />
           <span className="fee-unit">%</span>
         </div>
       </div>
     </fieldset>
   </section>
-)
+  )
+}

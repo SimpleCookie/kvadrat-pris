@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { calculateRunway, type BurnScenario } from '../../lib/runway'
 import { formatSEK } from '../../lib/pricing'
-import { type T } from '../../lib/i18n'
+import { useTranslations } from '../../store/useDerived'
 import { Tooltip } from '../../components/Tooltip'
 
 type Props = {
@@ -9,7 +9,6 @@ type Props = {
   overheadPerYear: number
   pensionPerMonth: number
   retainedInCompany: number
-  t: T
 }
 
 const DEFAULT_BUFFER_MONTHS = 3
@@ -19,8 +18,8 @@ export const RunwayCard = ({
   overheadPerYear,
   pensionPerMonth,
   retainedInCompany,
-  t,
 }: Props) => {
+  const strings = useTranslations()
   const [bufferMonths, setBufferMonths] = useState(DEFAULT_BUFFER_MONTHS)
   const [scenario, setScenario] = useState<BurnScenario>('full')
 
@@ -35,15 +34,15 @@ export const RunwayCard = ({
 
   return (
     <div className="forecast-block">
-      <h2 className="forecast-block-title">{t.runwayTitle}</h2>
-      <p className="forecast-comparison-text">{t.runwayIntro}</p>
+      <h2 className="forecast-block-title">{strings.runwayTitle}</h2>
+      <p className="forecast-comparison-text">{strings.runwayIntro}</p>
 
       {/* ── Inputs ── */}
       <div className="runway-inputs">
         <div className="runway-input-row">
           <span className="runway-input-label">
-            {t.bufferMonthsLabel}
-            <Tooltip content={t.bufferMonthsTooltip} ariaLabel={t.bufferMonthsTooltip} />
+            {strings.bufferMonthsLabel}
+            <Tooltip content={strings.bufferMonthsTooltip} ariaLabel={strings.bufferMonthsTooltip} />
           </span>
           <input
             type="number"
@@ -53,28 +52,28 @@ export const RunwayCard = ({
             value={bufferMonths}
             onChange={e => setBufferMonths(Math.max(1, Math.min(24, parseInt(e.target.value) || 1)))}
             className="runway-months-input"
-            aria-label={t.bufferMonthsLabel}
+            aria-label={strings.bufferMonthsLabel}
           />
         </div>
         <div className="runway-input-row">
           <span className="runway-input-label">
-            {t.scenarioLabel}
-            <Tooltip content={t.scenarioTooltip} ariaLabel={t.scenarioTooltip} />
+            {strings.scenarioLabel}
+            <Tooltip content={strings.scenarioTooltip} ariaLabel={strings.scenarioTooltip} />
           </span>
-          <div className="pension-mode-toggle" role="group" aria-label={t.scenarioLabel}>
+          <div className="pension-mode-toggle" role="group" aria-label={strings.scenarioLabel}>
             <button
               type="button"
               className={`pension-mode-btn${scenario === 'full' ? ' pension-mode-btn-active' : ''}`}
               onClick={() => setScenario('full')}
             >
-              {t.scenarioFull}
+              {strings.scenarioFull}
             </button>
             <button
               type="button"
               className={`pension-mode-btn${scenario === 'fixed-only' ? ' pension-mode-btn-active' : ''}`}
               onClick={() => setScenario('fixed-only')}
             >
-              {t.scenarioFixedOnly}
+              {strings.scenarioFixedOnly}
             </button>
           </div>
         </div>
@@ -83,14 +82,14 @@ export const RunwayCard = ({
       {/* ── Headline ── */}
       <div className="runway-headline-card">
         {result.status === 'unreachable' && (
-          <p className="runway-headline-text runway-unreachable">{t.runwayUnreachable}</p>
+          <p className="runway-headline-text runway-unreachable">{strings.runwayUnreachable}</p>
         )}
         {result.status === 'reached' && (
-          <p className="runway-headline-text">{t.runwayReached}</p>
+          <p className="runway-headline-text">{strings.runwayReached}</p>
         )}
         {result.status === 'reachable' && result.monthsToTarget !== null && (
           <p className="runway-headline-text">
-            {t.runwayHeadline(result.monthsToTarget, formatSEK(result.targetBuffer))}
+            {strings.runwayHeadline(result.monthsToTarget, formatSEK(result.targetBuffer))}
           </p>
         )}
       </div>
@@ -98,15 +97,15 @@ export const RunwayCard = ({
       {/* ── Breakdown ── */}
       <div className="breakdown-rows">
         <div className="breakdown-row">
-          <span>{t.monthlyBurnLabel}</span>
+          <span>{strings.monthlyBurnLabel}</span>
           <span className="breakdown-value">{formatSEK(result.monthlyBurn)}</span>
         </div>
         <div className="breakdown-row">
-          <span>{t.targetBufferLabel}</span>
+          <span>{strings.targetBufferLabel}</span>
           <span className="breakdown-value">{formatSEK(result.targetBuffer)}</span>
         </div>
         <div className={`breakdown-row ${result.annualSavings > 0 ? 'forecast-retained' : 'breakdown-deduction'}`}>
-          <span>{t.annualSavingsLabel}</span>
+          <span>{strings.annualSavingsLabel}</span>
           <span className="breakdown-value">
             {result.annualSavings < 0 ? '−' : ''}{formatSEK(Math.abs(result.annualSavings))}
           </span>
@@ -114,8 +113,8 @@ export const RunwayCard = ({
       </div>
 
       {/* ── Disclaimers ── */}
-      <p className="forecast-disclaimer">* {t.runwayDisclaimerDividend}</p>
-      <p className="forecast-disclaimer">* {t.runwayDisclaimerPension}</p>
+      <p className="forecast-disclaimer">* {strings.runwayDisclaimerDividend}</p>
+      <p className="forecast-disclaimer">* {strings.runwayDisclaimerPension}</p>
     </div>
   )
 }
