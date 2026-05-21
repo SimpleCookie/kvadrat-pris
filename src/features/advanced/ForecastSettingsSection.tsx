@@ -1,5 +1,5 @@
 import { Tooltip } from '../../components/Tooltip'
-import { type ForecastSettings } from '../../hooks/useForecastSettings'
+import { type ForecastSettings } from '../../store/useAppStore'
 import { type T } from '../../lib/i18n'
 
 type Props = {

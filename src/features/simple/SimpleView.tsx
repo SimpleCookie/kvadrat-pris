@@ -1,32 +1,31 @@
+import { useAppStore } from '../../store/useAppStore'
+import { usePricingDerived } from '../../store/useDerived'
 import { PricesSection } from '../../components/PricesSection'
 import { FeesSection } from '../../components/FeesSection'
 import { SimpleBreakdown } from './SimpleBreakdown'
-import { type UsePricingStateResult } from '../../hooks/usePricingState'
 import { type T } from '../../lib/i18n'
 
-type Props = {
-  pricing: UsePricingStateResult
-  t: T
-}
+type Props = { t: T }
 
-export const SimpleView = ({ pricing, t }: Props) => {
-  const { state, derived, dispatch } = pricing
+export const SimpleView = ({ t }: Props) => {
+  const { activeField, activeValue, kvadratFee, middlemanFee, setPrice, setActiveField, setKvadratFee, setMiddlemanFee } = useAppStore()
+  const derived = usePricingDerived()
   return (
     <>
       <PricesSection
-        activeField={state.activeField}
-        activeValue={state.activeValue}
+        activeField={activeField}
+        activeValue={activeValue}
         consultantPrice={derived.consultantPrice}
         clientPrice={derived.clientPrice}
-        onPriceChange={(field, value) => dispatch({ type: 'SET_PRICE', field, value })}
-        onFieldFocus={(field) => dispatch({ type: 'SET_ACTIVE_FIELD', field })}
+        onPriceChange={setPrice}
+        onFieldFocus={setActiveField}
         t={t}
       />
       <FeesSection
-        kvadratFee={state.kvadratFee}
-        middlemanFee={state.middlemanFee}
-        onKvadratChange={(value) => dispatch({ type: 'SET_KVADRAT_FEE', value })}
-        onMiddlemanChange={(value) => dispatch({ type: 'SET_MIDDLEMAN_FEE', value })}
+        kvadratFee={kvadratFee}
+        middlemanFee={middlemanFee}
+        onKvadratChange={setKvadratFee}
+        onMiddlemanChange={setMiddlemanFee}
         t={t}
       />
       {derived.hasValue && (
