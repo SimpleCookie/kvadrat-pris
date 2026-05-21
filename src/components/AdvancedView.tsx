@@ -6,18 +6,22 @@ import {
 } from '../lib/forecast'
 import { formatSEK } from '../lib/pricing'
 import { type T } from '../lib/i18n'
+import { Tooltip } from './Tooltip'
 
 type Props = ForecastInputs & {
   kvadratCutPerHour?: number
+  pensionPerMonth?: number
   t: T
 }
 
 export const AdvancedView = (props: Props) => {
   const r = calculateForecast(props)
-  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour, t } = props
+  const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour, pensionPerMonth, t } = props
 
   const equivGrossYear = calculateEquivalentEmployeeGross(r.totalTakeHomeYear, kommunalskatt)
   const equivGrossMonth = Math.round(equivGrossYear / 12)
+  const pensionYear = (pensionPerMonth ?? 0) * 12
+  const pensionAdjustedRetained = Math.max(0, r.retainedInCompany - pensionYear)
 
   if (!consultantRatePerHour) {
     return (
@@ -84,11 +88,10 @@ export const AdvancedView = (props: Props) => {
               <div className="breakdown-row breakdown-deduction">
                 <span>
                   {t.dividend}
-                  <span
-                    className="fee-tooltip"
-                    data-tooltip={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
-                    aria-label={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
-                  >?</span>
+                  <Tooltip
+                    content={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
+                    ariaLabel={t.dividendTooltip(formatSEK(SCHABLONBELOPP))}
+                  />
                 </span>
                 <span className="breakdown-value">−{formatSEK(r.dividendGross)}</span>
               </div>
@@ -96,19 +99,37 @@ export const AdvancedView = (props: Props) => {
                 <span>{t.dividendTax}</span>
                 <span className="breakdown-value">−{formatSEK(r.dividendTax)}</span>
               </div>
-              {r.retainedInCompany > 0 && (
+              {(pensionPerMonth ?? 0) > 0 && (
+                <div className="breakdown-row breakdown-deduction">
+                  <span>
+                    {t.pensionRow}
+                    <Tooltip content={t.pensionRowTooltip} ariaLabel={t.pensionRowTooltip} />
+                  </span>
+                  <span className="breakdown-value">−{formatSEK(pensionYear)}</span>
+                </div>
+              )}
+              {pensionAdjustedRetained > 0 && (
                 <div className="breakdown-row forecast-retained">
                   <span>
                     {t.retainedLabel}
-                    <span
-                      className="fee-tooltip"
-                      data-tooltip={t.retainedTooltip}
-                      aria-label={t.retainedAriaLabel}
-                    >?</span>
+                    <Tooltip content={t.retainedTooltip} ariaLabel={t.retainedAriaLabel} />
                     <span className="forecast-retained-note">{t.retainedNote}</span>
                   </span>
-                  <span className="breakdown-value">{formatSEK(r.retainedInCompany)}</span>
+                  <span className="breakdown-value">{formatSEK(pensionAdjustedRetained)}</span>
                 </div>
+              )}
+              {(pensionPerMonth ?? 0) > 0 && (
+                <div className="breakdown-row forecast-pension-pot">
+                  <span>
+                    {t.pensionRow}
+                    <Tooltip content={t.pensionRowTooltip} ariaLabel={t.pensionRowTooltip} />
+                    <span className="forecast-retained-note">{t.pensionSavingsNote}</span>
+                  </span>
+                  <span className="breakdown-value">{formatSEK(pensionYear)}</span>
+                </div>
+              )}
+              {(pensionPerMonth ?? 0) > 0 && pensionYear > r.retainedInCompany && (
+                <p className="forecast-pension-warning">{t.pensionExceedsRetained}</p>
               )}
             </>
           )}
@@ -145,14 +166,15 @@ export const AdvancedView = (props: Props) => {
       <div className="forecast-block forecast-block-comparison">
         <h2 className="forecast-block-title">
           {t.employeeBlock}
-          <span
-            className="fee-tooltip"
-            data-tooltip={t.employeeTooltip}
-            aria-label={t.employeeAriaLabel}
-          >?</span>
+          <Tooltip content={t.employeeTooltip} ariaLabel={t.employeeAriaLabel} />
         </h2>
         <p className="forecast-comparison-text">
-          {t.employeeComparisonText(`${formatSEK(equivGrossMonth)}/mån`)}
+          {pensionPerMonth && pensionPerMonth > 0
+            ? t.employeeComparisonTextWithPension(
+              `${formatSEK(equivGrossMonth)}/m\u00e5n`,
+              formatSEK(pensionPerMonth)
+            )
+            : t.employeeComparisonText(`${formatSEK(equivGrossMonth)}/m\u00e5n`)}
         </p>
       </div>
 

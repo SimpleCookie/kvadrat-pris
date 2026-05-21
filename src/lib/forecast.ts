@@ -27,6 +27,24 @@ export const DEFAULT_BILLABLE_HOURS = 1_600
 /** Default kommunalskatt (%) */
 export const DEFAULT_KOMMUNALSKATT = 32
 
+// ─── Pension / savings ────────────────────────────────────────────────────
+
+export type PensionMode = "percent" | "fixed"
+
+export interface PensionInput {
+  mode: PensionMode
+  /** Percent (0–100) when mode is "percent", kr/month when mode is "fixed" */
+  value: number
+  monthlySalaryGross: number
+}
+
+/** Returns the monthly pension/savings contribution in kr. */
+export const calculatePensionPerMonth = ({ mode, value, monthlySalaryGross }: PensionInput): number => {
+  if (value <= 0) return 0
+  if (mode === "fixed") return Math.round(value)
+  return Math.round(monthlySalaryGross * (value / 100))
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────
 
 export interface ForecastInputs {

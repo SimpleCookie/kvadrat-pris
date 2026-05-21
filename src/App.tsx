@@ -6,7 +6,9 @@ import {
   clampFee,
   formatSEK,
 } from "./lib/pricing"
+import { calculatePensionPerMonth, type PensionMode } from "./lib/forecast"
 import { AdvancedView } from "./components/AdvancedView"
+import { Tooltip } from "./components/Tooltip"
 import { translations, type Lang } from "./lib/i18n"
 
 const STORAGE_KEY = "kvadrat-pris-state"
@@ -17,6 +19,8 @@ interface SavedState {
   kvadratFee: string
   middlemanFee: string
   lang?: Lang
+  pensionMode?: PensionMode
+  pensionValue?: string
 }
 
 const loadState = (): Partial<SavedState> => {
@@ -48,13 +52,15 @@ const App = () => {
   const [monthlySalary, setMonthlySalary] = useState("53600")
   const [overhead, setOverhead] = useState("25000")
   const [kommunalskatt, setKommunalskatt] = useState("32")
+  const [pensionMode, setPensionMode] = useState<PensionMode>(saved.pensionMode ?? "percent")
+  const [pensionValue, setPensionValue] = useState(saved.pensionValue ?? "4.5")
 
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ activeField, activeValue, kvadratFee, middlemanFee, lang })
+      JSON.stringify({ activeField, activeValue, kvadratFee, middlemanFee, lang, pensionMode, pensionValue })
     )
-  }, [activeField, activeValue, kvadratFee, middlemanFee, lang])
+  }, [activeField, activeValue, kvadratFee, middlemanFee, lang, pensionMode, pensionValue])
 
   const parsedActive = parseFloat(activeValue) || 0
   const parsedKvadrat = clampFee(parseFloat(kvadratFee) || 0)
@@ -76,6 +82,12 @@ const App = () => {
   const kvadratCut = afterMiddleman - consultantPrice
 
   const hasValue = parsedActive > 0
+
+  const pensionPerMonth = calculatePensionPerMonth({
+    mode: pensionMode,
+    value: parseFloat(pensionValue) || 0,
+    monthlySalaryGross: parseInt(monthlySalary) || 0,
+  })
 
   const handleReset = () => {
     setActiveField("consultant")
@@ -134,20 +146,20 @@ const App = () => {
       <fieldset className="fees-fieldset">
         <legend className="fees-legend">{t.feesLegend}</legend>
         <div className="fee-row">
-          <label htmlFor="kvadrat-fee" className="fee-label">
-            {t.kvadratShare}
-            <span className="fee-tooltip" data-tooltip={t.kvadratShareTooltip} aria-label={t.kvadratShareTooltip}>?</span>
-          </label>
+          <span className="fee-label">
+            <label htmlFor="kvadrat-fee">{t.kvadratShare}</label>
+            <Tooltip content={t.kvadratShareTooltip} ariaLabel={t.kvadratShareTooltip} />
+          </span>
           <div className="fee-input-wrap">
             <input id="kvadrat-fee" type="number" inputMode="decimal" min={0} max={99} step={1} className="fee-input" value={kvadratFee} onChange={(e) => setKvadratFee(e.target.value)} aria-label={t.kvadratShare} />
             <span className="fee-unit">%</span>
           </div>
         </div>
         <div className="fee-row">
-          <label htmlFor="middleman-fee" className="fee-label">
-            {t.middleman}
-            <span className="fee-tooltip" data-tooltip={t.middlemanTooltip} aria-label={t.middlemanTooltip}>?</span>
-          </label>
+          <span className="fee-label">
+            <label htmlFor="middleman-fee">{t.middleman}</label>
+            <Tooltip content={t.middlemanTooltip} ariaLabel={t.middlemanTooltip} />
+          </span>
           <div className="fee-input-wrap">
             <input id="middleman-fee" type="number" inputMode="decimal" min={0} max={99} step={1} className="fee-input" value={middlemanFee} onChange={(e) => setMiddlemanFee(e.target.value)} aria-label={t.middleman} />
             <span className="fee-unit">%</span>
@@ -163,30 +175,44 @@ const App = () => {
         <legend className="fees-legend">{t.settingsLegend}</legend>
         <div className="forecast-settings-grid">
           <div className="forecast-settings-field">
-            <label htmlFor="billable-hours" className="forecast-settings-label">
-              {t.billableHours}
-              <span className="fee-tooltip" data-tooltip={t.billableHoursTooltip} aria-label={t.billableHoursAria}>?</span>
-            </label>
+            <span className="forecast-settings-label">
+              <label htmlFor="billable-hours">{t.billableHours}</label>
+              <Tooltip content={t.billableHoursTooltip} ariaLabel={t.billableHoursAria} />
+            </span>
             <div className="forecast-settings-input-wrap">
               <input id="billable-hours" type="number" inputMode="numeric" min={0} max={3000} step={40} className="forecast-settings-input" value={billableHours} onChange={(e) => setBillableHours(e.target.value)} aria-label={t.billableHoursAria} />
               <span className="fee-unit">h</span>
             </div>
+            <p className="price-hint">{t.billableHoursHint}</p>
           </div>
           <div className="forecast-settings-field">
-            <label htmlFor="monthly-salary" className="forecast-settings-label">
-              {t.monthlySalary}
-              <span className="fee-tooltip" data-tooltip={t.monthlySalaryTooltip} aria-label={t.monthlySalaryAria}>?</span>
-            </label>
+            <span className="forecast-settings-label">
+              <label htmlFor="monthly-salary">{t.monthlySalary}</label>
+              <Tooltip content={t.monthlySalaryTooltip} ariaLabel={t.monthlySalaryAria} />
+            </span>
             <div className="forecast-settings-input-wrap">
               <input id="monthly-salary" type="number" inputMode="numeric" min={0} step={1000} className="forecast-settings-input" value={monthlySalary} onChange={(e) => setMonthlySalary(e.target.value)} aria-label={t.monthlySalaryAria} />
               <span className="fee-unit">kr</span>
             </div>
           </div>
           <div className="forecast-settings-field">
-            <label htmlFor="overhead" className="forecast-settings-label">
-              {t.overheadLabel}
-              <span className="fee-tooltip" data-tooltip={t.overheadTooltip} aria-label={t.overheadAria}>?</span>
-            </label>
+            <span className="forecast-settings-label">
+              <label htmlFor="pension">{t.pension}</label>
+              <Tooltip content={t.pensionTooltip} ariaLabel={t.pensionAria} />
+            </span>
+            <div className="forecast-settings-input-wrap">
+              <input id="pension" type="number" inputMode="decimal" min={0} step={pensionMode === "percent" ? 0.5 : 500} max={pensionMode === "percent" ? 100 : 100000} className="forecast-settings-input" value={pensionValue} onChange={(e) => setPensionValue(e.target.value)} aria-label={t.pensionAria} />
+              <div className="pension-mode-toggle" role="group" aria-label="Pension unit">
+                <button type="button" className={`pension-mode-btn${pensionMode === 'percent' ? ' pension-mode-btn-active' : ''}`} onClick={() => setPensionMode('percent')}>%</button>
+                <button type="button" className={`pension-mode-btn${pensionMode === 'fixed' ? ' pension-mode-btn-active' : ''}`} onClick={() => setPensionMode('fixed')}>kr</button>
+              </div>
+            </div>
+          </div>
+          <div className="forecast-settings-field">
+            <span className="forecast-settings-label">
+              <label htmlFor="overhead">{t.overheadLabel}</label>
+              <Tooltip content={t.overheadTooltip} ariaLabel={t.overheadAria} />
+            </span>
             <div className="forecast-settings-input-wrap">
               <input id="overhead" type="number" inputMode="numeric" min={0} step={1000} className="forecast-settings-input" value={overhead} onChange={(e) => setOverhead(e.target.value)} aria-label={t.overheadAria} />
               <span className="fee-unit">kr</span>
@@ -275,6 +301,7 @@ const App = () => {
                   overheadPerYear={parseInt(overhead) || 0}
                   kommunalskatt={parseFloat(kommunalskatt) || 0}
                   kvadratCutPerHour={kvadratCut}
+                  pensionPerMonth={pensionPerMonth}
                   t={t}
                 />
               </div>

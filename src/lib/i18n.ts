@@ -24,6 +24,7 @@ export type T = {
   billableHours: string
   billableHoursTooltip: string
   billableHoursAria: string
+  billableHoursHint: string
   monthlySalary: string
   monthlySalaryTooltip: string
   monthlySalaryAria: string
@@ -32,6 +33,15 @@ export type T = {
   overheadAria: string
   municipalTax: string
   municipalTaxAria: string
+  pension: string
+  pensionTooltip: string
+  pensionAria: string
+  pensionUnitPercent: string
+  pensionUnitFixed: string
+  pensionRow: string
+  pensionRowTooltip: string
+  pensionSavingsNote: string
+  pensionExceedsRetained: string
   // Simple view breakdown
   breakdownTitle: string
   clientPays: string
@@ -68,6 +78,7 @@ export type T = {
   employeeTooltip: string
   employeeAriaLabel: string
   employeeComparisonText: (amount: string) => string
+  employeeComparisonTextWithPension: (salary: string, pension: string) => string
   disclaimer: (rate: number) => string
 }
 
@@ -93,8 +104,9 @@ export const translations: Record<Lang, T> = {
 
     settingsLegend: 'Inställningar',
     billableHours: 'Timmar/år',
-    billableHoursTooltip: 'Räkna bort semester, helgdagar och intern tid. Standard: 40h × 40v = 1\u202f600\u00a0h.',
+    billableHoursTooltip: 'Antal fakturerbara timmar per år.',
     billableHoursAria: 'Fakturerbara timmar per år',
+    billableHoursHint: 'Heltid är ca 2\u202f080\u00a0h/år. Räkna bort semester, röda dagar och intern tid\u202f—\u202f1\u202f600\u00a0h är en vanlig utgångspunkt.',
     monthlySalary: 'Månadslön',
     monthlySalaryTooltip: 'Statlig skattebrytpunkt 2026: ~643\u202f100\u00a0kr/år ≈ 53\u202f600\u00a0kr/mån. Lön över detta beskattas hårdare.',
     monthlySalaryAria: 'Månadslön i kronor brutto',
@@ -103,6 +115,13 @@ export const translations: Record<Lang, T> = {
     overheadAria: 'Overheadkostnader per år i kronor',
     municipalTax: 'Kommunalskatt',
     municipalTaxAria: 'Kommunalskatt i procent',
+    pension: 'Pension / sparande',
+    pensionTooltip: 'Tjänstepension (ITP1: 4,5\u202f% under 7,5\u202fIBB, 30\u202f% över) eller kapitalförsäkring/ISK. Ange vad du vill jämföra med.',
+    pensionAria: 'Pension eller sparande per månad',
+    pensionUnitPercent: '% av lön',
+    pensionUnitFixed: 'kr/mån',
+    pensionRow: 'Pension / sparande',
+    pensionRowTooltip: 'Budgetpost per år. Minskar \"kvar i bolaget\"\u202f—\u202fingår inte i skatteberäkningen.',    pensionSavingsNote: 'ditt sparande',    pensionExceedsRetained: '* Avsättningen är större än kvar i bolaget\u202f—\u202ftäcks delvis av lön eller utdelning.',
 
     breakdownTitle: 'Fördelning per timme',
     clientPays: 'Kunden betalar',
@@ -139,6 +158,7 @@ export const translations: Record<Lang, T> = {
     employeeTooltip: 'Bruttolön som krävs för att en anställd ska nå samma nettoinkomst. Utan jobbskatteavdrag (reell lön är något lägre).',
     employeeAriaLabel: 'Jämförelse med anställd',
     employeeComparisonText: (amount) => `För motsvarande nettolön som anställd krävs ${amount}/mån i bruttolön.`,
+    employeeComparisonTextWithPension: (salary, pension) => `För motsvarande nettolön som anställd krävs ${salary} i bruttolön, plus ${pension}/mån i pension/sparande.`,
     disclaimer: (rate) => `* Netto = efter kommunalskatt (${rate}%) och utdelningsskatt. Jobbskatteavdrag ej inräknat. Förenklingsregeln antagen för utdelning.`,
   },
 
@@ -163,8 +183,9 @@ export const translations: Record<Lang, T> = {
 
     settingsLegend: 'Settings',
     billableHours: 'Hours/year',
-    billableHoursTooltip: 'Deduct holidays and internal time. Default: 40h × 40w = 1,600\u00a0h.',
+    billableHoursTooltip: 'Number of billable hours per year.',
     billableHoursAria: 'Billable hours per year',
+    billableHoursHint: 'Full-time is ~2,080\u00a0h/year. Deduct holiday, public holidays and internal time\u202f—\u202f1,600\u00a0h is a common starting point.',
     monthlySalary: 'Monthly salary',
     monthlySalaryTooltip: 'State income tax threshold 2026: ~643,100\u00a0kr/year ≈ 53,600\u00a0kr/month. Salary above this is taxed at a higher rate.',
     monthlySalaryAria: 'Monthly gross salary in SEK',
@@ -173,6 +194,13 @@ export const translations: Record<Lang, T> = {
     overheadAria: 'Annual overhead costs in SEK',
     municipalTax: 'Municipal tax',
     municipalTaxAria: 'Municipal tax rate in percent',
+    pension: 'Pension / savings',
+    pensionTooltip: 'Occupational pension (ITP1: 4.5\u202f% below 7.5\u202fIBB, 30\u202f% above) or kapitalförsäkring/ISK. Enter what you want to compare against.',
+    pensionAria: 'Pension or savings per month',
+    pensionUnitPercent: '% of salary',
+    pensionUnitFixed: 'kr/month',
+    pensionRow: 'Pension / savings',
+    pensionRowTooltip: 'Annual budget earmark. Reduces \"retained in company\"\u202f—\u202fnot included in tax calculations.',    pensionSavingsNote: 'your savings',    pensionExceedsRetained: '* Earmark exceeds retained amount\u202f—\u202fpartly covered by salary or dividend.',
 
     breakdownTitle: 'Per-hour breakdown',
     clientPays: 'Client pays',
@@ -209,6 +237,7 @@ export const translations: Record<Lang, T> = {
     employeeTooltip: 'Gross salary required for an employee to reach the same net income. Excluding job tax credit (actual salary is slightly lower).',
     employeeAriaLabel: 'Comparison with employee',
     employeeComparisonText: (amount) => `The equivalent net income as an employee requires ${amount}/month gross salary.`,
+    employeeComparisonTextWithPension: (salary, pension) => `The equivalent net income as an employee requires ${salary} gross salary, plus ${pension}/month in pension/savings.`,
     disclaimer: (rate) => `* Net = after municipal tax (${rate}%) and dividend tax. Job tax credit not included. Simplified dividend rule assumed.`,
   },
 }

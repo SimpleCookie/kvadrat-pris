@@ -1,5 +1,6 @@
 import {
   calculateForecast,
+  calculatePensionPerMonth,
   SCHABLONBELOPP,
   SOCIAL_FEE_RATE,
   CORPORATE_TAX_RATE,
@@ -68,5 +69,17 @@ describe('calculateForecast', () => {
   it('monthly take-home is rounded annual divided by 12', () => {
     const r = calculateForecast(base)
     expect(r.totalTakeHomeMonth).toBe(Math.round(r.totalTakeHomeYear / 12))
+  })
+})
+
+describe('calculatePensionPerMonth', () => {
+  it('returns monthly amount for percent mode', () => {
+    expect(calculatePensionPerMonth({ mode: 'percent', value: 4.5, monthlySalaryGross: 50_000 })).toBe(2_250)
+  })
+  it('returns fixed amount for fixed mode', () => {
+    expect(calculatePensionPerMonth({ mode: 'fixed', value: 3_000, monthlySalaryGross: 50_000 })).toBe(3_000)
+  })
+  it('returns 0 when value is 0', () => {
+    expect(calculatePensionPerMonth({ mode: 'percent', value: 0, monthlySalaryGross: 50_000 })).toBe(0)
   })
 })

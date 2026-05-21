@@ -198,8 +198,15 @@
   gap: 0.375rem;
 }
 
-.fee-tooltip {
+/* ─── Tooltip ────────────────────────────────────────────────────────────── */
+.tooltip-wrap {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tooltip-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -210,34 +217,43 @@
   color: var(--text-secondary);
   font-size: 0.6875rem;
   font-weight: 700;
-  cursor: help;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  line-height: 1;
   flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
 }
 
-.fee-tooltip::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 0.375rem);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--text-primary);
-  color: var(--bg-primary);
+.tooltip-btn:hover,
+.tooltip-btn:focus-visible {
+  background: var(--accent);
+  color: #fff;
+}
+
+.tooltip-btn-pinned {
+  background: var(--accent);
+  color: #fff;
+}
+
+.tooltip-bubble {
+  /* position/top/left are set via inline style (fixed, JS-calculated) */
+  background: #1e293b;
+  color: #f0f4f8;
   font-size: 0.75rem;
   font-weight: 400;
-  line-height: 1.4;
-  padding: 0.375rem 0.625rem;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
   border-radius: var(--radius-sm);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  z-index: 10;
+  white-space: normal;
+  max-width: 280px;
+  width: max-content;
+  pointer-events: auto;
+  user-select: text;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.fee-tooltip:hover::after,
-.fee-tooltip:focus-visible::after {
-  opacity: 1;
-}
 
 .fee-input-wrap {
   display: flex;
@@ -450,6 +466,37 @@
   -webkit-appearance: none;
 }
 
+/* ─── Pension mode toggle ───────────────────────────────────────────────── */
+.pension-mode-toggle {
+  display: flex;
+  gap: 0.125rem;
+  flex-shrink: 0;
+}
+
+.pension-mode-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.4rem;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.pension-mode-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pension-mode-btn-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
 /* ─── Forecast two-column layout ────────────────────────────────────────── */
 .forecast-layout {
   display: flex;
@@ -566,6 +613,23 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-top: 0.1rem;
+}
+
+.forecast-pension-pot {
+  color: var(--accent);
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.forecast-pension-pot .breakdown-value {
+  color: var(--accent);
+}
+
+.forecast-pension-warning {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.375rem;
+  line-height: 1.4;
 }
 
 .forecast-kvadrat-cut {
