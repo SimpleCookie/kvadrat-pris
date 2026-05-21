@@ -8,6 +8,7 @@ import {
 } from "./lib/pricing"
 import { calculatePensionPerMonth, type PensionMode } from "./lib/forecast"
 import { AdvancedView } from "./components/AdvancedView"
+import { Future } from "./components/future/Future"
 import { Tooltip } from "./components/Tooltip"
 import { translations, type Lang } from "./lib/i18n"
 
@@ -38,7 +39,7 @@ const App = () => {
   const [lang, setLang] = useState<Lang>(saved.lang ?? 'sv')
   const t = translations[lang]
 
-  const [view, setView] = useState<"simple" | "advanced">("simple")
+  const [view, setView] = useState<"simple" | "advanced" | "future">("simple")
 
   const [activeField, setActiveField] = useState<"consultant" | "client">(
     saved.activeField ?? "consultant"
@@ -231,7 +232,7 @@ const App = () => {
   )
 
   return (
-    <div className={`App${view === "advanced" ? " view-advanced" : ""}`}>
+    <div className={`App${view === 'advanced' ? ' view-advanced' : view === 'future' ? ' view-future' : ''}`}>
       <main className="main">
         <div className="card">
           <header className="card-header">
@@ -245,18 +246,16 @@ const App = () => {
                   <button type="button" className={`lang-btn${lang === 'sv' ? ' lang-btn-active' : ''}`} onClick={() => setLang('sv')}>SV</button>
                   <button type="button" className={`lang-btn${lang === 'en' ? ' lang-btn-active' : ''}`} onClick={() => setLang('en')}>EN</button>
                 </div>
-                <button
-                  type="button"
-                  className="view-toggle"
-                  onClick={() => setView(v => v === "simple" ? "advanced" : "simple")}
-                >
-                  {view === "simple" ? t.viewForecast : t.viewSimple}
-                </button>
+                <div className="view-toggle-group" role="group" aria-label="View">
+                  <button type="button" className={`view-toggle-btn${view === 'simple' ? ' view-toggle-btn-active' : ''}`} onClick={() => setView('simple')}>{t.viewSimple}</button>
+                  <button type="button" className={`view-toggle-btn${view === 'advanced' ? ' view-toggle-btn-active' : ''}`} onClick={() => setView('advanced')}>{t.viewForecast}</button>
+                  <button type="button" className={`view-toggle-btn${view === 'future' ? ' view-toggle-btn-active' : ''}`} onClick={() => setView('future')}>{t.futureTab}</button>
+                </div>
               </div>
             </div>
           </header>
 
-          {view === "simple" ? (
+          {view === 'simple' && (
             <>
               {pricesSection}
               {feesSection}
@@ -286,7 +285,8 @@ const App = () => {
                 </section>
               )}
             </>
-          ) : (
+          )}
+          {view === 'advanced' && (
             <div className="forecast-layout">
               <div className="forecast-layout-left">
                 {pricesSection}
@@ -306,6 +306,17 @@ const App = () => {
                 />
               </div>
             </div>
+          )}
+          {view === 'future' && (
+            <Future
+              consultantRatePerHour={consultantPrice}
+              billableHoursPerYear={parseInt(billableHours) || 0}
+              monthlySalaryGross={parseInt(monthlySalary) || 0}
+              overheadPerYear={parseInt(overhead) || 0}
+              pensionPerMonth={pensionPerMonth}
+              kommunalskatt={parseFloat(kommunalskatt) || 0}
+              t={t}
+            />
           )}
 
           <footer className="card-footer">

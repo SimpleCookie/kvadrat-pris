@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import App from './App'
 
 test('renders both price fields', () => {
@@ -19,4 +19,11 @@ test('renders reset button', () => {
   render(<App />)
   expect(screen.getByRole('button', { name: /återställ/i })).toBeInTheDocument()
 });
+
+test('renders future tab and shows runway card', () => {
+  render(<App />)
+  const futureBtn = screen.getByRole('button', { name: /framtid/i })
+  fireEvent.click(futureBtn)
+  expect(screen.getByText(/kassaflödesbuffert/i)).toBeInTheDocument()
+})
 

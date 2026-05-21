@@ -42,6 +42,35 @@ export type T = {
   pensionRowTooltip: string
   pensionSavingsNote: string
   pensionExceedsRetained: string
+  // Future tab
+  futureTab: string
+  futureTabAria: string
+  // Runway
+  runwayTitle: string
+  runwayIntro: string
+  bufferMonthsLabel: string
+  bufferMonthsTooltip: string
+  scenarioLabel: string
+  scenarioFull: string
+  scenarioFixedOnly: string
+  scenarioTooltip: string
+  monthlyBurnLabel: string
+  targetBufferLabel: string
+  annualSavingsLabel: string
+  runwayHeadline: (months: number, amount: string) => string
+  runwayUnreachable: string
+  runwayReached: string
+  runwayDisclaimerDividend: string
+  runwayDisclaimerPension: string
+  // Break-even
+  breakEvenTitle: string
+  breakEvenIntro: string
+  breakEvenCurrent: (hours: string, price: string, revenue: string) => string
+  breakEvenHoursLabel: string
+  breakEvenPriceLabel: string
+  breakEvenRevenueLabel: string
+  breakEvenOutOfRange: string
+  breakEvenReset: string
   // Simple view breakdown
   breakdownTitle: string
   clientPays: string
@@ -86,8 +115,8 @@ export const translations: Record<Lang, T> = {
   sv: {
     title: 'Kvadrat Priskalkylator',
     subtitle: 'Beräkna konsult- och kundpris',
-    viewForecast: 'Prognos →',
-    viewSimple: '← Enkel vy',
+    viewForecast: 'Avancerad',
+    viewSimple: 'Enkel',
 
     consultantPrice: 'Konsultpris',
     consultantPriceHint: 'Det du tar hem',
@@ -122,6 +151,33 @@ export const translations: Record<Lang, T> = {
     pensionUnitFixed: 'kr/mån',
     pensionRow: 'Pension / sparande',
     pensionRowTooltip: 'Budgetpost per år. Minskar \"kvar i bolaget\"\u202f—\u202fingår inte i skatteberäkningen.',    pensionSavingsNote: 'ditt sparande',    pensionExceedsRetained: '* Avsättningen är större än kvar i bolaget\u202f—\u202ftäcks delvis av lön eller utdelning.',
+
+    futureTab: 'Framtid',
+    futureTabAria: 'Framtidsvy',
+    runwayTitle: 'Kassaflödesbuffert',
+    runwayIntro: 'Hur lång tid tar det att spara ihop en kassabuffert för en period utan intäkter?',
+    bufferMonthsLabel: 'Buffert (månader)',
+    bufferMonthsTooltip: 'Hur många månaders drift du vill klara utan inkomst.',
+    scenarioLabel: 'Burn-scenario',
+    scenarioFull: 'Full drift',
+    scenarioFixedOnly: 'Bara fasta kostnader',
+    scenarioTooltip: 'Full drift: lön + sociala avgifter + overhead + pension fortsätter. Bara fasta kostnader: enbart overhead\u202f—\u202flönen pausad.',
+    monthlyBurnLabel: 'Månadlig burn',
+    targetBufferLabel: 'Målbuffert',
+    annualSavingsLabel: 'Sparas per år (kvar i bolaget)',
+    runwayHeadline: (months, amount) => `Det tar ca ${months}\u00a0månader att spara ihop ${amount}.`,
+    runwayUnreachable: 'Med nuvarande nivå går det inte att bygga buffert\u202f—\u202fvinsten kvar i bolaget är 0 eller negativ.',
+    runwayReached: 'Buffertmålet är redan uppnått med nuvarande inställningar.',
+    runwayDisclaimerDividend: 'Utdelningen räknas inte som buffert i bolaget\u202f—\u202fden tas ut till dig privat.',
+    runwayDisclaimerPension: 'Pensionsavsättning räknas som öronmärkt och ingår inte i buffertmålet.',
+    breakEvenTitle: 'Brytpunkt\u202f— timmar och pris',
+    breakEvenIntro: 'Vid den här kombinationen täcker intäkterna exakt lön, sociala avgifter, overhead och pension.',
+    breakEvenCurrent: (hours, price, revenue) => `Nu: ${hours}\u00a0h \u00d7 ${price}\u00a0kr/h\u202f=\u202f${revenue}/år`,
+    breakEvenHoursLabel: 'Timmar/år',
+    breakEvenPriceLabel: 'Pris kr/h',
+    breakEvenRevenueLabel: 'Brytpunktsintäkt',
+    breakEvenOutOfRange: 'Utanför intervallet',
+    breakEvenReset: 'Återställ',
 
     breakdownTitle: 'Fördelning per timme',
     clientPays: 'Kunden betalar',
@@ -165,8 +221,8 @@ export const translations: Record<Lang, T> = {
   en: {
     title: 'Kvadrat Price Calculator',
     subtitle: 'Calculate consultant and client rate',
-    viewForecast: 'Forecast →',
-    viewSimple: '← Simple view',
+    viewForecast: 'Advanced',
+    viewSimple: 'Simple',
 
     consultantPrice: 'Consultant rate',
     consultantPriceHint: 'What you keep',
@@ -201,6 +257,33 @@ export const translations: Record<Lang, T> = {
     pensionUnitFixed: 'kr/month',
     pensionRow: 'Pension / savings',
     pensionRowTooltip: 'Annual budget earmark. Reduces \"retained in company\"\u202f—\u202fnot included in tax calculations.',    pensionSavingsNote: 'your savings',    pensionExceedsRetained: '* Earmark exceeds retained amount\u202f—\u202fpartly covered by salary or dividend.',
+
+    futureTab: 'Future',
+    futureTabAria: 'Future view',
+    runwayTitle: 'Cash flow buffer',
+    runwayIntro: 'How long does it take to save a buffer to sustain operations during a period without income?',
+    bufferMonthsLabel: 'Buffer (months)',
+    bufferMonthsTooltip: 'How many months of operations you want to sustain without income.',
+    scenarioLabel: 'Burn scenario',
+    scenarioFull: 'Full operations',
+    scenarioFixedOnly: 'Fixed costs only',
+    scenarioTooltip: 'Full operations: salary + payroll tax + overhead + pension continue. Fixed costs only: overhead only\u202f—\u202fsalary paused.',
+    monthlyBurnLabel: 'Monthly burn',
+    targetBufferLabel: 'Target buffer',
+    annualSavingsLabel: 'Saved per year (retained in company)',
+    runwayHeadline: (months, amount) => `It takes approximately ${months}\u00a0months to save ${amount}.`,
+    runwayUnreachable: 'At the current level it is not possible to build a buffer\u202f—\u202fprofit retained in company is 0 or negative.',
+    runwayReached: 'The buffer target is already met with current settings.',
+    runwayDisclaimerDividend: 'Dividend is not counted as company buffer\u202f—\u202fit is withdrawn to your personal finances.',
+    runwayDisclaimerPension: 'Pension earmark is not included in the buffer target.',
+    breakEvenTitle: 'Break-even\u202f— hours and rate',
+    breakEvenIntro: 'At this combination, revenue exactly covers salary, payroll tax, overhead and pension.',
+    breakEvenCurrent: (hours, price, revenue) => `Now: ${hours}\u00a0h \u00d7 ${price}\u00a0kr/h\u202f=\u202f${revenue}/year`,
+    breakEvenHoursLabel: 'Hours/year',
+    breakEvenPriceLabel: 'Rate kr/h',
+    breakEvenRevenueLabel: 'Break-even revenue',
+    breakEvenOutOfRange: 'Out of range',
+    breakEvenReset: 'Reset',
 
     breakdownTitle: 'Per-hour breakdown',
     clientPays: 'Client pays',
