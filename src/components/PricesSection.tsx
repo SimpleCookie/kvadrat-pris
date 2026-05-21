@@ -19,46 +19,46 @@ export const PricesSection = ({
 }: Props) => {
   const strings = useTranslations()
   return (
-  <section className="prices-section">
-    <div className={`price-field${activeField === 'consultant' ? ' active' : ''}`}>
-      <label htmlFor="consultant-price" className="price-label">{strings.consultantPrice}</label>
-      <div className="price-input-wrap">
-        <input
-          id="consultant-price"
-          type="number"
-          inputMode="decimal"
-          min={0}
-          step={50}
-          className="price-input"
-          value={activeField === 'consultant' ? activeValue : String(consultantPrice)}
-          onChange={(e) => onPriceChange('consultant', e.target.value)}
-          onFocus={() => onFieldFocus('consultant')}
-          aria-label={strings.consultantPriceAria}
-        />
-        <span className="price-unit">kr/h</span>
+    <section className="prices-section">
+      <div className={`price-field${activeField === 'consultant' ? ' active' : ''}`}>
+        <label htmlFor="consultant-price" className="price-label">{strings.consultantPrice}</label>
+        <div className="price-input-wrap">
+          <input
+            id="consultant-price"
+            type="number"
+            inputMode="decimal"
+            min={0}
+            step={50}
+            className="price-input"
+            value={activeField === 'consultant' ? activeValue : String(consultantPrice)}
+            onChange={(e) => onPriceChange('consultant', e.target.value)}
+            onFocus={() => onFieldFocus('consultant')}
+            aria-label={strings.consultantPriceAria}
+          />
+          <span className="price-unit">kr/h</span>
+        </div>
+        <p className="price-hint">{strings.consultantPriceHint}</p>
       </div>
-      <p className="price-hint">{strings.consultantPriceHint}</p>
-    </div>
-    <div className="price-arrow" aria-hidden="true">⇄</div>
-    <div className={`price-field${activeField === 'client' ? ' active' : ''}`}>
-      <label htmlFor="client-price" className="price-label">{strings.clientPrice}</label>
-      <div className="price-input-wrap">
-        <input
-          id="client-price"
-          type="number"
-          inputMode="decimal"
-          min={0}
-          step={50}
-          className="price-input"
-          value={activeField === 'client' ? activeValue : String(clientPrice)}
-          onChange={(e) => onPriceChange('client', e.target.value)}
-          onFocus={() => onFieldFocus('client')}
-          aria-label={strings.clientPriceAria}
-        />
-        <span className="price-unit">kr/h</span>
+      <div className="price-arrow" aria-hidden="true">⇄</div>
+      <div className={`price-field${activeField === 'client' ? ' active' : ''}`}>
+        <label htmlFor="client-price" className="price-label">{strings.clientPrice}</label>
+        <div className="price-input-wrap">
+          <input
+            id="client-price"
+            type="number"
+            inputMode="decimal"
+            min={0}
+            step={50}
+            className="price-input"
+            value={activeField === 'client' ? activeValue : String(clientPrice)}
+            onChange={(e) => onPriceChange('client', e.target.value)}
+            onFocus={() => onFieldFocus('client')}
+            aria-label={strings.clientPriceAria}
+          />
+          <span className="price-unit">kr/h</span>
+        </div>
+        <p className="price-hint">{strings.clientPriceHint}</p>
       </div>
-      <p className="price-hint">{strings.clientPriceHint}</p>
-    </div>
-  </section>
+    </section>
   )
 }
