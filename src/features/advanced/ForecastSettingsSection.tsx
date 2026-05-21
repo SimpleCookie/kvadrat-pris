@@ -1,6 +1,6 @@
-import { Tooltip } from './Tooltip'
-import { type ForecastSettings } from '../hooks/useForecastSettings'
-import { type T } from '../lib/i18n'
+import { Tooltip } from '../../components/Tooltip'
+import { type ForecastSettings } from '../../hooks/useForecastSettings'
+import { type T } from '../../lib/i18n'
 
 type Props = {
   settings: ForecastSettings

@@ -18,7 +18,7 @@ test('renders fee inputs with defaults', () => {
 test('renders reset button', () => {
   render(<App />)
   expect(screen.getByRole('button', { name: /återställ/i })).toBeInTheDocument()
-});
+})
 
 test('renders future tab and shows runway card', () => {
   render(<App />)

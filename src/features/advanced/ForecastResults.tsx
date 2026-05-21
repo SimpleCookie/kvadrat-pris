@@ -3,10 +3,10 @@ import {
   calculateEquivalentEmployeeGross,
   SCHABLONBELOPP,
   type ForecastInputs,
-} from '../lib/forecast'
-import { formatSEK } from '../lib/pricing'
-import { type T } from '../lib/i18n'
-import { Tooltip } from './Tooltip'
+} from '../../lib/forecast'
+import { formatSEK } from '../../lib/pricing'
+import { type T } from '../../lib/i18n'
+import { Tooltip } from '../../components/Tooltip'
 
 type Props = ForecastInputs & {
   kvadratCutPerHour?: number
@@ -14,7 +14,7 @@ type Props = ForecastInputs & {
   t: T
 }
 
-export const AdvancedView = (props: Props) => {
+export const ForecastResults = (props: Props) => {
   const r = calculateForecast(props)
   const { consultantRatePerHour, billableHoursPerYear, monthlySalaryGross, kommunalskatt, kvadratCutPerHour, pensionPerMonth, t } = props
 
@@ -44,7 +44,7 @@ export const AdvancedView = (props: Props) => {
         <p className="forecast-context forecast-kvadrat-cut">
           {t.kvadratShareLabel}{' '}
           <strong>{formatSEK(kvadratCutPerHour * billableHoursPerYear)}{t.perYear}</strong>
-          {' '}({kvadratCutPerHour.toLocaleString('sv-SE')} kr/h)
+          {' '}({kvadratCutPerHour.toLocaleString('sv-SE')} kr/h)
         </p>
       )}
 

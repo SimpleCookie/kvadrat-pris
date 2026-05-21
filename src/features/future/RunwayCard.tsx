@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { calculateRunway, type BurnScenario } from '../../lib/runway'
 import { formatSEK } from '../../lib/pricing'
 import { type T } from '../../lib/i18n'
-import { Tooltip } from '../Tooltip'
+import { Tooltip } from '../../components/Tooltip'
 
 type Props = {
   monthlySalaryGross: number

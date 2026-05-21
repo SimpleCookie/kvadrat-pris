@@ -84,3 +84,5 @@ export const usePricingState = (initial: Partial<PricingState> = {}) => {
   const derived = computeDerived(state)
   return { state, derived, dispatch }
 }
+
+export type UsePricingStateResult = ReturnType<typeof usePricingState>

@@ -40,3 +40,5 @@ export const useForecastSettings = (
 
   return { settings, updateSetting, pensionPerMonth }
 }
+
+export type UseForecastSettingsResult = ReturnType<typeof useForecastSettings>

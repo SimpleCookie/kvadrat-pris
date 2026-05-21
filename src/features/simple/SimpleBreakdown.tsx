@@ -1,5 +1,5 @@
-import { formatSEK } from '../lib/pricing'
-import { type T } from '../lib/i18n'
+import { formatSEK } from '../../lib/pricing'
+import { type T } from '../../lib/i18n'
 
 type Props = {
   clientPrice: number

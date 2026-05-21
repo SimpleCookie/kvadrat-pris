@@ -150,7 +150,7 @@ export const translations: Record<Lang, T> = {
     pensionUnitPercent: '% av lön',
     pensionUnitFixed: 'kr/mån',
     pensionRow: 'Pension / sparande',
-    pensionRowTooltip: 'Budgetpost per år. Minskar \"kvar i bolaget\"\u202f—\u202fingår inte i skatteberäkningen.',    pensionSavingsNote: 'ditt sparande',    pensionExceedsRetained: '* Avsättningen är större än kvar i bolaget\u202f—\u202ftäcks delvis av lön eller utdelning.',
+    pensionRowTooltip: 'Budgetpost per år. Minskar \"kvar i bolaget\"\u202f—\u202fingår inte i skatteberäkningen.', pensionSavingsNote: 'ditt sparande', pensionExceedsRetained: '* Avsättningen är större än kvar i bolaget\u202f—\u202ftäcks delvis av lön eller utdelning.',
 
     futureTab: 'Framtid',
     futureTabAria: 'Framtidsvy',
@@ -256,7 +256,7 @@ export const translations: Record<Lang, T> = {
     pensionUnitPercent: '% of salary',
     pensionUnitFixed: 'kr/month',
     pensionRow: 'Pension / savings',
-    pensionRowTooltip: 'Annual budget earmark. Reduces \"retained in company\"\u202f—\u202fnot included in tax calculations.',    pensionSavingsNote: 'your savings',    pensionExceedsRetained: '* Earmark exceeds retained amount\u202f—\u202fpartly covered by salary or dividend.',
+    pensionRowTooltip: 'Annual budget earmark. Reduces \"retained in company\"\u202f—\u202fnot included in tax calculations.', pensionSavingsNote: 'your savings', pensionExceedsRetained: '* Earmark exceeds retained amount\u202f—\u202fpartly covered by salary or dividend.',
 
     futureTab: 'Future',
     futureTabAria: 'Future view',
