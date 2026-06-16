@@ -59,6 +59,7 @@ export const PricesSection = ({
         </div>
         <p className="price-hint">{strings.clientPriceHint}</p>
       </div>
+      <p className="vat-note">Alla priser exkl. moms</p>
     </section>
   )
 }
