@@ -774,7 +774,8 @@
   bottom: 1.5rem;
   right: 1.5rem;
   z-index: 200;
-  flex-direction: column; /* menu first in DOM → renders above; FAB last → pinned at bottom */
+  flex-direction: column;
+  /* menu first in DOM → renders above; FAB last → pinned at bottom */
   align-items: flex-end;
   gap: 0.625rem;
 }
