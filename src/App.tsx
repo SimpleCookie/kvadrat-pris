@@ -1,5 +1,6 @@
 import { useState } from "react"
 import "./App.css"
+import { BackLink } from "./components/BackLink"
 import { CardHeader } from "./components/CardHeader"
 import { SimpleView } from "./features/simple/SimpleView"
 import { AdvancedView } from "./features/advanced/AdvancedView"
@@ -16,10 +17,7 @@ const App = () => {
 
   return (
     <div className={`App${view === 'advanced' ? ' view-advanced' : view === 'future' ? ' view-future' : ''}`}>
-      <a href="https://devgroup.se/" className="back-link">
-        <span className="back-link-arrow">←</span>
-        DevGroup.se
-      </a>
+      <BackLink />
       <main className="main">
         <div className="card">
           <CardHeader view={view} onViewChange={setView} />
